@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="Stylesheet" type="text/css" href="css/style.css" />
+
+        <script type="module" src="js/main.mjs"></script>
+    </head>
+    <body>
+        <div id="toolbox">
+            <div id="action-center" class="action">C</div>
+        </div>
+        <textarea id="code-area" autofocus="true"></textarea>
+        <canvas id="canvas"></canvas>
+
+        <script>
+            let canvas = document.getElementById("canvas");
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth * 0.49;
+        </script>
+    </body>
+</html>
