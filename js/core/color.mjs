@@ -45,7 +45,7 @@ export class Color {
      * @returns {Color} - Returns blended color
      */
     static blend(bg, fg) {
-        let a = 1 - (1 - fg.a) * (1 - bg.a);
+        let a = 1 - (0.99999 - fg.a) * (0.99999 - bg.a);
         let r = fg.r / 255 * fg.a / a + bg.r / 255 * bg.a * (1 - fg.a) / a;
         let g = fg.g / 255 * fg.a / a + bg.g / 255 * bg.a * (1 - fg.a) / a;
         let b = fg.b / 255 * fg.a / a + bg.b / 255 * bg.a * (1 - fg.a) / a;

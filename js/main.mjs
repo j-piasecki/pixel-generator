@@ -20,9 +20,9 @@ window.onload = () => {
 
     
     let brush = new BrushWhiteNoise(32, 32, new Color(255, 0, 0, 1));
-    let line = new DrawableLine(new Line(new Vector2(5, 5), new Vector2(15, 0)));
+    let line = new DrawableLine(new Line(new Vector2(5, 5), new Vector2(20, 0)));
 
-    line.fill(canvasManager.drawingLayer, brush);
+    line.fill(canvasManager.nextLayer, brush);
 
 
     let poly = new Polygon();
@@ -33,16 +33,5 @@ window.onload = () => {
 
     let dpoly = new DrawablePolygon(poly);
 
-    dpoly.fill(canvasManager.drawingLayer, brush);
-
-    brush = new BrushWhiteNoise(32, 32);
-    dpoly.stroke(canvasManager.drawingLayer, brush);
-
-    setInterval(() => { a(dpoly, brush); }, 30);
-}
-
-function a(poly, brush) {
-    canvasManager.drawingLayer.clear();
-    poly.polygon.rotate(0.02, new Vector2(12, 12));
-    poly.fill(canvasManager.drawingLayer, brush);
+    dpoly.fill(canvasManager.nextLayer, brush);
 }

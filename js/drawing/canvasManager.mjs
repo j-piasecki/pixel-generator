@@ -1,5 +1,6 @@
 import { Vector2 } from "../core/vector2.mjs";
 import { Layer } from "./layer.mjs";
+import { LayerManager } from "./layerManager.mjs";
 
 export class CanvasManager {
     /**
@@ -31,6 +32,7 @@ export class CanvasManager {
      */
     init(width, height) {
         this.drawingLayer = new Layer(width, height);
+        this.layerManager = new LayerManager(this.drawingLayer);
 
         this.centerContent(false);
         this.render();
@@ -39,6 +41,13 @@ export class CanvasManager {
         window.addEventListener("mousemove", (e) => { this.onMouseMove(e); });
         this.canvas.addEventListener("mousedown", (e) => { this.onMouseDown(e); });
         this.canvas.addEventListener("wheel", (e) => { this.onMouseWheel(e); });
+    }
+
+    /**
+     * @returns {Layer} - Returns new layer and puts it on top of the drawing stack
+     */
+    get nextLayer() {
+        return this.layerManager.nextLayer();
     }
 
     /**
@@ -78,12 +87,21 @@ export class CanvasManager {
 
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
+        this.layerManager.render();
         this.drawLayer(this.drawingLayer);
         this.drawImageBounds();
     }
 
     /**
-     * Draws contend of specified layer to the canvas
+     * Clears buffer layer and all composited layers
+     */
+    clear() {
+        this.drawingLayer.clear();
+        this.layerManager.clear();
+    }
+
+    /**
+     * Draws content of specified layer to the canvas
      * @param {Layer} layer 
      */
     drawLayer(layer) {
