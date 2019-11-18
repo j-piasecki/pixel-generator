@@ -20,8 +20,8 @@ export class Color {
     transition(other, progress) {
         return new Color(Math.floor(this.r + (other.r - this.r) * progress),
                             Math.floor(this.g + (other.g - this.g) * progress),
-                            Math.floor(this.b + (other.g - this.b) * progress),
-                            Math.floor(this.a + (other.g - this.a) * progress));
+                            Math.floor(this.b + (other.b - this.b) * progress),
+                            this.a + (other.a - this.a) * progress);
     }
 
     /**
