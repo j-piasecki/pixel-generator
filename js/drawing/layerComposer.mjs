@@ -2,7 +2,7 @@ import { Vector2 } from "../core/vector2.mjs";
 import { Color } from "../core/color.mjs";
 import { Layer } from "./layer.mjs";
 
-export class LayerManager {
+export class LayerComposer {
     /**
      * Layer manager used to compse all layers into drawing buffer
      * @param {Layer} target - Layer on which the composed image will be drawn

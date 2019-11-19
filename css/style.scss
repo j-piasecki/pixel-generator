@@ -30,6 +30,12 @@ body {
     .action:hover {
         background-color: rgba(255, 255, 255, 0.2);
     }
+
+    #action-center {
+        background-image: url("../img/icon_center.png");
+        background-position: center;
+        background-size: cover;
+    }
 }
 
 #code-area {

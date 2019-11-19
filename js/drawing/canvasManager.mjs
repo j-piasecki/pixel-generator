@@ -1,6 +1,6 @@
 import { Vector2 } from "../core/vector2.mjs";
 import { Layer } from "./layer.mjs";
-import { LayerManager } from "./layerManager.mjs";
+import { LayerComposer } from "./layerComposer.mjs";
 
 export class CanvasManager {
     /**
@@ -32,7 +32,7 @@ export class CanvasManager {
      */
     init(width, height) {
         this.drawingLayer = new Layer(width, height);
-        this.layerManager = new LayerManager(this.drawingLayer);
+        this.layerComposer = new LayerComposer(this.drawingLayer);
 
         this.centerContent(false);
         this.render();
@@ -47,7 +47,7 @@ export class CanvasManager {
      * @returns {Layer} - Returns new layer and puts it on top of the drawing stack
      */
     get nextLayer() {
-        return this.layerManager.nextLayer();
+        return this.layerComposer.nextLayer();
     }
 
     /**
@@ -87,7 +87,7 @@ export class CanvasManager {
 
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        this.layerManager.render();
+        this.layerComposer.render();
         this.drawLayer(this.drawingLayer);
         this.drawImageBounds();
     }
@@ -97,7 +97,7 @@ export class CanvasManager {
      */
     clear() {
         this.drawingLayer.clear();
-        this.layerManager.clear();
+        this.layerComposer.clear();
     }
 
     /**
