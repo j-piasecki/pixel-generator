@@ -9,10 +9,13 @@ export class Layer {
      */
     constructor(width, height) {
         this.setSize(width, height);
+
+        this.savedStates = [];
+        this.state = new State();
     }
 
     /**
-     * Sets size of layer anf fills it with transparent pixels
+     * Sets size of layer anf fills it with transparent pixels, resets saved and current states
      * @param {Number} width 
      * @param {Number} height 
      */
@@ -21,16 +24,11 @@ export class Layer {
         this.height = height;
 
         this.pixels = [];
-        for (let x = 0; x < width; x++) {
-            this.pixels[x] = [];
-            for (let y = 0; y < height; y++) {
-                this.pixels[x][y] = new Color(0, 0, 0, 0);
-            }
-        }
+        this.clear();
     }
 
     /**
-     * Sets every pixel to transparent
+     * Sets every pixel to transparent, resets saved and current states
      */
     clear() {
         for (let x = 0; x < this.width; x++) {
@@ -39,6 +37,23 @@ export class Layer {
                 this.pixels[x][y] = new Color(0, 0, 0, 0);
             }
         }
+
+        this.savedStates = [];
+        this.state = new State();
+    }
+
+    /**
+     * Adds current state to saved states stack
+     */
+    save() {
+        this.savedStates.push(this.state.copy());
+    }
+
+    /**
+     * Sets current state to the one at the top of the stack
+     */
+    restore() {
+        this.state = this.savedStates.pop();
     }
 
     /**
@@ -64,5 +79,59 @@ export class Layer {
         if (x >= 0 && y >= 0 && x < this.width && y < this.height) {
             this.pixels[x][y] = color;
         }
+    }
+}
+
+class State {
+    /**
+     * Class used to store properties of a layer at a given time
+     */
+    constructor() {
+        this.position = new Vector2(0, 0);
+        this.angle = 0;
+    }
+
+    /**
+     * @returns {State} - Returns copy of this state
+     */
+    copy() {
+        let cp = new State();
+        cp.position = this.position.copy();
+        cp.angle = this.angle;
+
+        return cp;
+    }
+
+    /**
+     * Changes current angle by the specified value
+     * @param {Number} angle - Angle in radians
+     */
+    rotate(angle) {
+        this.angle += angle;
+    }
+
+    /**
+     * Sets current angle to the specified value
+     * @param {Number} angle - Angle in radians
+     */
+    setRotation(angle) {
+        this.angle = angle;
+    }
+
+    /**
+     * Moves pointer in current direction by specified margin
+     * @param {Number} length - Length of shift
+     */
+    move(length) {
+        this.position = Vector2.add(this.position, new Vector2(0, length).rotate(this.angle));
+    }
+
+    /**
+     * Sets pointer to the specified point
+     * @param {Vector2} point - New pointer
+     */
+    moveTo(point) {
+        this.position.x = point.x;
+        this.position.y = point.y;
     }
 }
