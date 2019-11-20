@@ -89,6 +89,8 @@ class State {
     constructor() {
         this.position = new Vector2(0, 0);
         this.angle = 0;
+
+        this.variables = {};
     }
 
     /**
@@ -98,6 +100,13 @@ class State {
         let cp = new State();
         cp.position = this.position.copy();
         cp.angle = this.angle;
+
+        cp.variables = {};
+        for (let attr in this.variables) {
+            if (this.variables.hasOwnProperty(attr)) {
+                cp.variables[attr] = this.variables[attr];
+            }
+        }
 
         return cp;
     }
@@ -133,5 +142,22 @@ class State {
     moveTo(point) {
         this.position.x = point.x;
         this.position.y = point.y;
+    }
+
+    /**
+     * @param {String} name - Name of the accessed variable
+     * @returns {Number} - Returns value of specified variable
+     */
+    getVariable(name) {
+        return this.variables[name];
+    }
+
+    /**
+     * Sets selected varialbe to specified value
+     * @param {String} name - Name of the variable
+     * @param {Number} value - New value
+     */
+    setVariable(name, value) {
+        this.variables[name] = value;
     }
 }
