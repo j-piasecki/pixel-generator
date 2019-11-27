@@ -1,4 +1,5 @@
 import { Vector2 } from "./vector2.mjs";
+import { CanvasManager } from "../drawing/canvasManager.mjs";
 
 export class Line {
     /**
@@ -13,7 +14,7 @@ export class Line {
     /**
      * @returns {Vector2} - Returns normalized perpendicular vector
      */
-    get symmetryVector() {
+    get normalVector() {
         return (Vector2.subtract(this.end, this.start)).rightPerpendicular().normalize();
     }
 
@@ -30,7 +31,7 @@ export class Line {
      * @returns {Vector2} - Returns symmetrical point with respect to this line
      */
     symmetricalPoint(point) {
-        let step = this.symmetryVector;
+        let step = this.normalVector;
 
         if (this.distanceFrom(point) <= this.distanceFrom(Vector2.add(point, step)))
             step.reverse();
@@ -44,5 +45,23 @@ export class Line {
      */
     symmetrical(axis) {
         return new Line(axis.symmetricalPoint(this.start), axis.symmetricalPoint(this.end));
+    }
+
+    /**
+     * Draws the line with specified canvas manager
+     * @param {CanvasManager} canvas 
+     */
+    draw(canvas) {
+        canvas.context.strokeStyle = "rgb(0, 255, 0)";
+
+        let startX = Math.floor(canvas.translation.x * canvas.scale);
+        let startY = Math.floor(canvas.translation.y * canvas.scale);
+        let size = canvas.pixelSize * canvas.scale
+
+        canvas.context.beginPath();
+        canvas.context.moveTo(startX + this.start.x * size, startY + this.start.y * size);
+        canvas.context.lineTo(startX + this.end.x * size, startY + this.end.y * size);
+        canvas.context.closePath();
+        canvas.context.stroke();
     }
 }

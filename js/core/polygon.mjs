@@ -77,4 +77,26 @@ export class Polygon {
             this.vertices[i].rotate(angle, point);
         }
     }
+
+    /**
+     * Draws the polygon with specified canvas manager
+     * @param {CanvasManager} canvas 
+     */
+    draw(canvas) {
+        this.sortVertices();
+        canvas.context.strokeStyle = "rgb(0, 0, 255)";
+
+        let startX = Math.floor(canvas.translation.x * canvas.scale);
+        let startY = Math.floor(canvas.translation.y * canvas.scale);
+        let size = canvas.pixelSize * canvas.scale
+
+        canvas.context.beginPath();
+        canvas.context.moveTo(startX + this.vertices[0].x * size, startY + this.vertices[0].y * size);
+
+        for (let i = 1; i < this.vertices.length; i++)
+            canvas.context.lineTo(startX + this.vertices[i].x * size, startY + this.vertices[i].y * size);
+            
+        canvas.context.closePath();
+        canvas.context.stroke();
+    }
 }

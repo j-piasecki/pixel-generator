@@ -23,6 +23,8 @@ export class CanvasManager {
         this.mouseDown = false;
 
         this.pixelSize = 16;
+
+        this.wireframes = [];
     }
 
     /**
@@ -89,6 +91,11 @@ export class CanvasManager {
         
         this.layerComposer.render();
         this.drawLayer(this.drawingLayer);
+
+        for (let i = 0; i < this.wireframes.length; i++) {
+            this.wireframes[i].draw(this);
+        }
+
         this.drawImageBounds();
     }
 
@@ -98,6 +105,7 @@ export class CanvasManager {
     clear() {
         this.drawingLayer.clear();
         this.layerComposer.clear();
+        this.wireframes = [];
     }
 
     /**
