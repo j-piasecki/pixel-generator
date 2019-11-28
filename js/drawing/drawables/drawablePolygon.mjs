@@ -26,6 +26,8 @@ export class DrawablePolygon extends Drawable {
                 }
             }
         }
+
+        layer.wireframes.push(this.polygon);
     }
 
     /**
@@ -34,10 +36,12 @@ export class DrawablePolygon extends Drawable {
      * @param {Brush} brush - Brush to be used when drawing
      */
     stroke(layer, brush) {
+        let center = this.polygon.getCenter();
+
         for (let i = 0, j = this.polygon.vertices.length - 1; i < this.polygon.vertices.length; j = i++) {
-            let v1 = this.polygon.getPoint(j);
-            let v2 = this.polygon.getPoint(i);
-            let current = v1.copy(), step = Vector2.subtract(v2, v1).normalize();
+            let v1 = Vector2.add(this.polygon.getPoint(j), Vector2.multiplyByNumber(Vector2.subtract(center, this.polygon.getPoint(j)).normalize(), 0.05));
+            let v2 = Vector2.add(this.polygon.getPoint(i), Vector2.multiplyByNumber(Vector2.subtract(center, this.polygon.getPoint(i)).normalize(), 0.05));
+            let current = v1.copy(), step = Vector2.multiplyByNumber(Vector2.subtract(v2, v1).normalize(), 0.5);
 
             do {
                 if (Math.floor(current.x) >= 0 && Math.floor(current.x) < layer.width && Math.floor(current.y) >= 0 && Math.floor(current.y) < layer.height) {
@@ -47,5 +51,7 @@ export class DrawablePolygon extends Drawable {
                 current = Vector2.add(current, step);
             } while(current.distanceFrom(v2) > 0 && current.distanceFrom(v2) > current.distanceFrom(Vector2.add(current, step)));
         }
+
+        layer.wireframes.push(this.polygon);
     }
 }

@@ -51,13 +51,15 @@ export class DrawableLine extends Drawable {
                 let point = new Vector2(x + 0.5, y + 0.5);
                 let distance = this.line.distanceFrom(point);
 
-                if (distance <= 1 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.115) {
+                if (distance <= 0.5 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
                     let color = brush.layer.getPixel(x, y).copy();
                     color.a *= (1 - distance);
                     layer.setPixel(x, y, color);
                 }
             }
         }
+
+        layer.wireframes.push(this.line);
     }
 
     /**
