@@ -158,6 +158,15 @@ export class Vector2 {
     }
 
     /**
+     * @param {Vector2} v
+     * @param {Number} n
+     * @returns {Vector2} - Multiples specified vector by the number
+     */
+    static multiplyByNumber(v, n) {
+        return new Vector2(v.x * n, v.y * n);
+    }
+
+    /**
      * @param {Vector2} v1 
      * @param {Vector2} v2 
      * @returns {Vector2} - Divides coordinates of two specified vectors

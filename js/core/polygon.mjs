@@ -23,7 +23,7 @@ export class Polygon {
     }
 
     /**
-     * @returns {Number} - Returns center of the polygon
+     * @returns {Vector2} - Returns center of the polygon
      */
     getCenter() {
         let x = 0, y = 0;
