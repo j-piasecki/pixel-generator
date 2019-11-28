@@ -37,6 +37,10 @@ export class LayerComposer {
                 }
             }
         }
+
+        for (let i = 0; i < this.layers.length; i++) {
+            this.target.wireframes = this.target.wireframes.concat(this.layers[i].wireframes);
+        }
     }
 
     /**

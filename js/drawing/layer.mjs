@@ -12,6 +12,7 @@ export class Layer {
 
         this.savedStates = [];
         this.state = new State();
+        this.wireframes = [];
     }
 
     /**
@@ -40,6 +41,7 @@ export class Layer {
 
         this.savedStates = [];
         this.state = new State();
+        this.wireframes = [];
     }
 
     /**
