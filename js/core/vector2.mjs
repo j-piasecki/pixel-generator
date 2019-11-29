@@ -6,6 +6,10 @@ export class Vector2 {
     constructor(x, y) {
         this.x = x;
         this.y = y;
+
+        this.radius = 0; //Radius for generating random point in the area
+        this.parent = null; //Parent/source vector
+        this.color = null;
     }
 
     get length() {
@@ -43,6 +47,7 @@ export class Vector2 {
      * Rotates vector by specified angle (around specified origin)
      * @param {number} angle - Angle of rotation in radians
      * @param {Vector2} point - Origin of rotation (unnecesary)
+     * @returns {Vector2} - Returns this vector
      */
     rotate(angle, point) {
         let originX = 0, originY = 0;
@@ -89,6 +94,41 @@ export class Vector2 {
     }
 
     /**
+     * Sets radius for generating random points in the area
+     * @param {Number} radius - New radius
+     * @returns {Vector2} - Returns this vector
+     */
+    setRadius(radius) {
+        this.radius = radius;
+
+        return this;
+    }
+
+    /**
+     * Sets new parent to this vector
+     * @param {Vector2} parent - New parent
+     * @returns {Vector2} - Returns this vector
+     */
+    setParent(parent) {
+        this.parent = parent;
+
+        return this;
+    }
+
+    /**
+     * @returns {Vector2} - Returns random point in area created by this one
+     */
+    next() {
+        let result = null;
+
+        do {
+            result = new Vector2(this.x + (Math.random() * 2 - 1) * this.radius, this.y + (Math.random() * 2 - 1) * this.radius);
+        } while (result.distanceFrom(this) > this.radius);
+
+        return result.setParent(this);
+    }
+
+    /**
      * Reverses vector (multiples both coordinates by -1)
      */
     reverse() {
@@ -101,6 +141,34 @@ export class Vector2 {
      */
      copy() {
         return new Vector2(this.x, this.y);
+    }
+
+    /**
+     * Draws the vector with specified canvas manager
+     * @param {CanvasManager} canvas 
+     */
+    draw(canvas) {
+        if (this.parent != null) {
+            this.parent.color = this.color;
+            this.parent.draw(canvas);
+            //return;
+        }
+
+        canvas.context.strokeStyle = this.color.getRGBAString();
+        canvas.context.fillStyle = this.color.getRGBAString();
+
+        let startX = Math.floor(canvas.translation.x * canvas.scale);
+        let startY = Math.floor(canvas.translation.y * canvas.scale);
+        let size = canvas.pixelSize * canvas.scale
+
+        canvas.context.beginPath();
+        canvas.context.arc(startX + this.x * size, startY + this.y * size, this.radius * size, 0, Math.PI * 2);
+        canvas.context.closePath();
+        canvas.context.stroke();
+
+        canvas.context.beginPath();
+        canvas.context.arc(startX + this.x * size, startY + this.y * size, 3, 0, Math.PI * 2);
+        canvas.context.fill();
     }
 
     /**

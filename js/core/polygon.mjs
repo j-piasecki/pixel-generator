@@ -101,5 +101,10 @@ export class Polygon {
             
         canvas.context.closePath();
         canvas.context.stroke();
+
+        for (let i = 0; i < this.vertices.length; i++) {
+            this.vertices[i].color = this.color;
+            this.vertices[i].draw(canvas);
+        }
     }
 }

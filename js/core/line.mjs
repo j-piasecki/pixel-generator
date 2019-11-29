@@ -66,5 +66,9 @@ export class Line {
         canvas.context.lineTo(startX + this.end.x * size, startY + this.end.y * size);
         canvas.context.closePath();
         canvas.context.stroke();
+
+        this.start.color = this.end.color = this.color;
+        this.start.draw(canvas);
+        this.end.draw(canvas);
     }
 }
