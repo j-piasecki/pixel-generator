@@ -8,6 +8,7 @@ import { BrushWhiteNoise } from "./drawing/brushes/brushWhiteNoise.mjs";
 import { DrawableLine } from "./drawing/drawables/drawableLine.mjs";
 import { DrawablePolygon } from "./drawing/drawables/drawablePolygon.mjs";
 import { ScriptInterpreter } from "./scripting/scriptInterpreter.mjs";
+import { BrushCircularGradient } from "./drawing/brushes/brushCircularGradient.mjs";
 
 var canvas = document.getElementById("canvas");
 var canvasManager = new CanvasManager(canvas);
@@ -19,4 +20,5 @@ var scriptInterpreter = new ScriptInterpreter();
 window.onload = () => {
     document.getElementById("action-center").addEventListener("click", (e) => { canvasManager.centerContent(true); });
     document.getElementById("action-run").addEventListener("click", (e) => { scriptInterpreter.run(codeInput.value); });
+    document.getElementById("action-switch-wireframes").addEventListener("click", (e) => { canvasManager.wireframesVisible = !canvasManager.wireframesVisible; });
 }

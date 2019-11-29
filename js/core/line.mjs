@@ -1,5 +1,6 @@
 import { Vector2 } from "./vector2.mjs";
 import { CanvasManager } from "../drawing/canvasManager.mjs";
+import { Color } from "./color.mjs";
 
 export class Line {
     /**
@@ -9,6 +10,8 @@ export class Line {
     constructor(start, end) {
         this.start = start;
         this.end = end;
+
+        this.color = new Color(0, 255, 0, 1);
     }
 
     /**
@@ -52,7 +55,7 @@ export class Line {
      * @param {CanvasManager} canvas 
      */
     draw(canvas) {
-        canvas.context.strokeStyle = "rgb(0, 255, 0)";
+        canvas.context.strokeStyle = this.color.getRGBAString();
 
         let startX = Math.floor(canvas.translation.x * canvas.scale);
         let startY = Math.floor(canvas.translation.y * canvas.scale);

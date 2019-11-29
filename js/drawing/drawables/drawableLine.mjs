@@ -59,6 +59,7 @@ export class DrawableLine extends Drawable {
             }
         }
 
+        this.line.color = brush.invertedColor;
         layer.wireframes.push(this.line);
     }
 

@@ -11,6 +11,8 @@ export class CanvasManager {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
 
+        this.wireframesVisible = true;
+
         this.translation = new Vector2(0, 0);
         this.targetTranslation = new Vector2(0, 0);
         this.scale = 1;
@@ -89,12 +91,13 @@ export class CanvasManager {
         
         this.layerComposer.render();
         this.drawLayer(this.drawingLayer);
-
-        for (let i = 0; i < this.drawingLayer.wireframes.length; i++) {
-            this.drawingLayer.wireframes[i].draw(this);
-        }
-
         this.drawImageBounds();
+
+        if (this.wireframesVisible) {
+            for (let i = 0; i < this.drawingLayer.wireframes.length; i++) {
+                this.drawingLayer.wireframes[i].draw(this);
+            }
+        }
     }
 
     /**

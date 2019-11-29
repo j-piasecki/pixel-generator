@@ -17,6 +17,8 @@ export class BrushWhiteNoise extends Brush {
         
         this.color = color;
 
+        this.invertedColor = new Color(255 - color.r, 255 - color.g, 255 - color.b, 1);
+
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let brightness = Math.random();

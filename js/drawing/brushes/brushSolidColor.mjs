@@ -17,6 +17,8 @@ export class BrushSolidColor extends Brush {
 
         this.color = color;
 
+        this.invertedColor = new Color(255 - color.r, 255 - color.g, 255 - color.b, 1);
+
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
                 this.layer.setPixel(x, y, this.color.copy());

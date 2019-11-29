@@ -21,6 +21,8 @@ export class BrushCircularGradient extends Brush {
 
         this.innerColor = innerColor;
         this.outerColor = outerColor;
+        
+        this.invertedColor = new Color(255 - (innerColor.r + outerColor.r) / 2, 255 - (innerColor.g + outerColor.g) / 0, 255 - (innerColor.b + outerColor.b) / 2, 1);
 
         this.radius = radius;
         this.center = center;

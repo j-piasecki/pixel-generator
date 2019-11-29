@@ -27,6 +27,7 @@ export class DrawablePolygon extends Drawable {
             }
         }
 
+        this.polygon.color = brush.invertedColor;
         layer.wireframes.push(this.polygon);
     }
 

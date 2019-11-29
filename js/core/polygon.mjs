@@ -1,8 +1,11 @@
+import { Color } from "./color.mjs";
 import { Vector2 } from "./vector2.mjs";
 
 export class Polygon {
     constructor() {
         this.vertices = new Array();
+
+        this.color = new Color(0, 0, 255, 1);
     }
 
     /**
@@ -84,7 +87,7 @@ export class Polygon {
      */
     draw(canvas) {
         this.sortVertices();
-        canvas.context.strokeStyle = "rgb(0, 0, 255)";
+        canvas.context.strokeStyle = this.color.getRGBAString();
 
         let startX = Math.floor(canvas.translation.x * canvas.scale);
         let startY = Math.floor(canvas.translation.y * canvas.scale);
