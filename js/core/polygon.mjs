@@ -4,8 +4,6 @@ import { Vector2 } from "./vector2.mjs";
 export class Polygon {
     constructor() {
         this.vertices = new Array();
-
-        this.color = new Color(0, 0, 255, 1);
     }
 
     /**

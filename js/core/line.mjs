@@ -10,8 +10,6 @@ export class Line {
     constructor(start, end) {
         this.start = start;
         this.end = end;
-
-        this.color = new Color(0, 255, 0, 1);
     }
 
     /**
@@ -64,7 +62,6 @@ export class Line {
         canvas.context.beginPath();
         canvas.context.moveTo(startX + this.start.x * size, startY + this.start.y * size);
         canvas.context.lineTo(startX + this.end.x * size, startY + this.end.y * size);
-        canvas.context.closePath();
         canvas.context.stroke();
 
         this.start.color = this.end.color = this.color;
