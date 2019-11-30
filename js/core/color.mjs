@@ -46,6 +46,10 @@ export class Color {
      */
     static blend(bg, fg) {
         let a = 1 - (0.99999 - fg.a) * (0.99999 - bg.a);
+
+        if (a < 0) a = 0;
+        if (a > 1) a = 1;
+
         let r = fg.r / 255 * fg.a / a + bg.r / 255 * bg.a * (1 - fg.a) / a;
         let g = fg.g / 255 * fg.a / a + bg.g / 255 * bg.a * (1 - fg.a) / a;
         let b = fg.b / 255 * fg.a / a + bg.b / 255 * bg.a * (1 - fg.a) / a;

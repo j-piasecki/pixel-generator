@@ -53,7 +53,7 @@ export class DrawableLine extends Drawable {
 
                 if (distance <= 0.5 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
                     let color = brush.layer.getPixel(x, y).copy();
-                    color.a *= (1 - distance);
+                    color.a *= Math.pow(1 - distance, 0.75);
                     layer.setPixel(x, y, color);
                 }
             }

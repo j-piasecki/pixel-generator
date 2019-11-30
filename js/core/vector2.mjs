@@ -7,7 +7,8 @@ export class Vector2 {
         this.x = x;
         this.y = y;
 
-        this.radius = 0; //Radius for generating random point in the area
+        this.rangeX = 0; //Max x offset for generating random point in the area
+        this.rangeY = 0; //Max y offset for generating random point in the area
         this.parent = null; //Parent/source vector
         this.color = null;
     }
@@ -99,7 +100,20 @@ export class Vector2 {
      * @returns {Vector2} - Returns this vector
      */
     setRadius(radius) {
-        this.radius = radius;
+        this.rangeX = this.rangeY = radius;
+
+        return this;
+    }
+
+    /**
+     * Sets range for generating random points in the area
+     * @param {Number} x - New x range
+     * @param {Number} y - New y range
+     * @returns {Vector2} - Returns this vector
+     */
+    setRange(x, y) {
+        this.rangeX = x;
+        this.rangeY = y;
 
         return this;
     }
@@ -122,8 +136,8 @@ export class Vector2 {
         let result = null;
 
         do {
-            result = new Vector2(this.x + (Math.random() * 2 - 1) * this.radius, this.y + (Math.random() * 2 - 1) * this.radius);
-        } while (result.distanceFrom(this) > this.radius);
+            result = new Vector2(this.x + (Math.random() * 2 - 1) * this.rangeX, this.y + (Math.random() * 2 - 1) * this.rangeY);
+        } while (result.distanceFrom(this) > this.rangeX && Math.abs(this.rangeX - this.rangeY) < 0.01); //if both offsets are equal they are treated as radius so new point is generated until it lands inside circle, otherwise the first one is returned
 
         return result.setParent(this);
     }
@@ -161,10 +175,20 @@ export class Vector2 {
         let startY = Math.floor(canvas.translation.y * canvas.scale);
         let size = canvas.pixelSize * canvas.scale
 
-        canvas.context.beginPath();
-        canvas.context.arc(startX + this.x * size, startY + this.y * size, this.radius * size, 0, Math.PI * 2);
-        canvas.context.closePath();
-        canvas.context.stroke();
+        if (this.rangeY == this.rangeX) {
+            canvas.context.beginPath();
+            canvas.context.arc(startX + this.x * size, startY + this.y * size, this.rangeX * size, 0, Math.PI * 2);
+            canvas.context.closePath();
+            canvas.context.stroke();
+        } else {
+            canvas.context.beginPath();
+            canvas.context.moveTo(startX + this.x * size - this.rangeX * size, startY + this.y * size - this.rangeY * size);
+            canvas.context.lineTo(startX + this.x * size + this.rangeX * size, startY + this.y * size - this.rangeY * size);
+            canvas.context.lineTo(startX + this.x * size + this.rangeX * size, startY + this.y * size + this.rangeY * size);
+            canvas.context.lineTo(startX + this.x * size - this.rangeX * size, startY + this.y * size + this.rangeY * size);
+            canvas.context.closePath();
+            canvas.context.stroke();
+        }
 
         canvas.context.beginPath();
         canvas.context.arc(startX + this.x * size, startY + this.y * size, 3, 0, Math.PI * 2);
