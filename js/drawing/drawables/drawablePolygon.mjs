@@ -9,6 +9,8 @@ export class DrawablePolygon extends Drawable {
         super();
 
         this.polygon = polygon;
+
+        this.wireframesVisible = true;
     }
 
     /**
@@ -27,8 +29,10 @@ export class DrawablePolygon extends Drawable {
             }
         }
 
-        this.polygon.color = brush.invertedColor;
-        layer.wireframes.push(this.polygon);
+        if (this.wireframesVisible) {
+            this.polygon.color = brush.invertedColor;
+            layer.wireframes.push(this.polygon);
+        }
     }
 
     /**
@@ -53,6 +57,9 @@ export class DrawablePolygon extends Drawable {
             } while(current.distanceFrom(v2) > 0 && current.distanceFrom(v2) > current.distanceFrom(Vector2.add(current, step)));
         }
 
-        layer.wireframes.push(this.polygon);
+        if (this.wireframesVisible) {
+            this.polygon.color = brush.invertedColor;
+            layer.wireframes.push(this.polygon);
+        }
     }
 }

@@ -41,6 +41,10 @@ body {
   background-image: url("../img/icon_run.png");
 }
 
+#toolbox #action-switch-wireframes {
+  background-image: url("../img/icon_switch_wireframes.png");
+}
+
 #code-area {
   display: inline-block;
   resize: none;
