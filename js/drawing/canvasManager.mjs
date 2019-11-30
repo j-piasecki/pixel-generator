@@ -35,6 +35,7 @@ export class CanvasManager {
     init(width, height) {
         this.drawingLayer = new Layer(width, height);
         this.layerComposer = new LayerComposer(this.drawingLayer);
+        this.variables = {}; //global variables
 
         this.centerContent(false);
         this.render();
@@ -100,6 +101,7 @@ export class CanvasManager {
     clear() {
         this.drawingLayer.clear();
         this.layerComposer.clear();
+        this.variables = {};
     }
 
     /**
@@ -165,6 +167,23 @@ export class CanvasManager {
             this.translation.x = this.targetTranslation.x = translationX;
             this.translation.y = this.targetTranslation.y = translationY;
         }
+    }
+
+    /**
+     * @param {String} name - Name of the accessed variable
+     * @returns {Number} - Returns value of specified variable
+     */
+    getVariable(name) {
+        return this.variables[name];
+    }
+
+    /**
+     * Sets selected varialbe to specified value
+     * @param {String} name - Name of the variable
+     * @param {Number} value - New value
+     */
+    setVariable(name, value) {
+        this.variables[name] = value;
     }
 
     /**
