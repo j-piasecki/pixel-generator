@@ -4,6 +4,7 @@ import { Vector2 } from "./vector2.mjs";
 export class Polygon {
     constructor() {
         this.vertices = new Array();
+        this.allowSorting = true;
     }
 
     /**
@@ -41,7 +42,7 @@ export class Polygon {
      * Sorts vertices of the polygon clockwise
      */
     sortVertices() {
-        if (this.vertices.length == 0)
+        if (this.vertices.length == 0 || !this.allowSorting)
             return;
 
 
