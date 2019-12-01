@@ -25,6 +25,24 @@ export class Curve {
     }
 
     /**
+     * 
+     * @param {Number} step - Step used for calculation (0-1)
+     * @returns {Number} - Returns length of the curve approximated with specified step
+     */
+    getLength(step) {
+        let prev = this.start, current, result = 0;
+
+        for (let i = step; i < 1; i += step) {
+            current = this.getPoint(step);
+            result += prev.distanceFrom(current);
+
+            prev = current;
+        }
+
+        return result + prev.distanceFrom(this.end);
+    }
+
+    /**
      * @param {Number} t - Index of curve point (0-1)
      * @param {Boolean} first - Specifies whether to return first part of the curve (0-t) or second (t-1)
      * @returns {Curve} - Returns specified part of the curve
