@@ -24,7 +24,8 @@ export class Line {
      * @returns {number} - Returns distance between this line and specified point
      */
     distanceFrom(point) {
-        return Math.abs((this.end.x - this.start.x) * (this.start.y - point.y) - (this.start.x - point.x) * (this.end.y - this.start.y)) / Math.sqrt((this.end.x - this.start.x) * (this.end.x - this.start.x) + (this.end.y - this.start.y) * (this.end.y - this.start.y));
+        return Line.distance(this.start, this.end, point);
+        //return Math.abs((this.end.x - this.start.x) * (this.start.y - point.y) - (this.start.x - point.x) * (this.end.y - this.start.y)) / Math.sqrt((this.end.x - this.start.x) * (this.end.x - this.start.x) + (this.end.y - this.start.y) * (this.end.y - this.start.y));
     }
 
     /**
@@ -67,5 +68,15 @@ export class Line {
         this.start.color = this.end.color = this.color;
         this.start.draw(canvas);
         this.end.draw(canvas);
+    }
+
+    /**
+     * @param {Vector2} start - First point of line
+     * @param {Vector2} end - Second point of line
+     * @param {Vector2} point - Point to be used in calculation
+     * @returns {number} - Returns distance between line and specified point
+     */
+    static distance(start, end, point) {
+        return Math.abs((end.x - start.x) * (start.y - point.y) - (start.x - point.x) * (end.y - start.y)) / Math.sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y));
     }
 }

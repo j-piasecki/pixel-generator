@@ -51,12 +51,25 @@ export class DrawableLine extends Drawable {
                 let point = new Vector2(x + 0.5, y + 0.5);
                 let distance = this.line.distanceFrom(point);
 
-                if (this.polygon.containsPoint(new Vector2(x + 0.5, y + 0.5))) {
+                if (this.polygon.containsPoint(point)) {
                     layer.setPixel(x, y, brush.layer.getPixel(x, y).copy());
                 } else if (distance <= 0.5 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
                     let color = brush.layer.getPixel(x, y).copy();
-                    color.a *= Math.pow(1 - distance, 0.75);
-                    layer.setPixel(x, y, color);
+                    layer.setPixel(x, y, color.setA(color.a * Math.pow(1 - distance, 0.75)));
+                } else if (this.startThickness > 1 || this.endThickness > 1) {
+                    distance = 1;
+
+                    for (let i = 0, j = this.polygon.vertices.length - 1; i < this.polygon.vertices.length; j = i++) {
+                        let tmp = Line.distance(this.polygon.vertices[j], this.polygon.vertices[i], point);
+                        if (tmp < distance && Math.abs(this.polygon.vertices[j].distanceFrom(this.polygon.vertices[i]) - this.polygon.vertices[j].distanceFrom(point) - this.polygon.vertices[i].distanceFrom(point)) < 0.5) {
+                            distance = tmp;
+                        }
+                    }
+
+                    if (distance > 0 && distance < 0.5) {
+                        let color = brush.layer.getPixel(x, y).copy();
+                        layer.setPixel(x, y, color.setA(color.a * Math.pow(1 - distance, 2.5)));
+                    }
                 }
             }
         }
