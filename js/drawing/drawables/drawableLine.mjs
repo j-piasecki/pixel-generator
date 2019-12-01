@@ -21,6 +21,8 @@ export class DrawableLine extends Drawable {
         this._startThickness = 1;
         this._endThickness = 1;
 
+        this.wireframeVisible = true;
+
         this.generatePolygon();
     }
 
@@ -53,9 +55,9 @@ export class DrawableLine extends Drawable {
 
                 if (this.polygon.containsPoint(point)) {
                     layer.setPixel(x, y, brush.layer.getPixel(x, y).copy());
-                } else if (distance <= 0.5 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
+                } else if (distance <= 0.75 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
                     let color = brush.layer.getPixel(x, y).copy();
-                    layer.setPixel(x, y, color.setA(color.a * Math.pow(1 - distance, 0.75)));
+                    layer.setPixel(x, y, color.setA(color.a * Math.pow(1 - distance, 0.85)));
                 } else if (this.startThickness > 1 || this.endThickness > 1) {
                     distance = 1;
 
@@ -73,6 +75,9 @@ export class DrawableLine extends Drawable {
                 }
             }
         }
+
+        if (!this.wireframeVisible)
+            return;
 
         this.line.color = brush.invertedColor;
         this.polygon.color = brush.invertedColor.copy().setA(0.5);

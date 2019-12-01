@@ -1,12 +1,15 @@
 import { Vector2 } from "../../core/vector2.mjs";
 import { Polygon } from "../../core/polygon.mjs";
+import { Drawable } from "./drawable.mjs";
 import { DrawablePolygon } from "./drawablePolygon.mjs";
 
-export class DrawableLineStrip {
+export class DrawableLineStrip extends Drawable {
     /**
      * @param {Array.<LineStripElement>} points - List of points in the strip (not required)
      */
     constructor(points) {
+        super();
+        
         this.points = (points == undefined) ? [] : points;
         this.generatedPoints = [];
     }
