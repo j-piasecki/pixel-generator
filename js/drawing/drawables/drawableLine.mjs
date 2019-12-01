@@ -51,7 +51,9 @@ export class DrawableLine extends Drawable {
                 let point = new Vector2(x + 0.5, y + 0.5);
                 let distance = this.line.distanceFrom(point);
 
-                if (distance <= 0.5 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
+                if (this.polygon.containsPoint(new Vector2(x + 0.5, y + 0.5))) {
+                    layer.setPixel(x, y, brush.layer.getPixel(x, y).copy());
+                } else if (distance <= 0.5 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
                     let color = brush.layer.getPixel(x, y).copy();
                     color.a *= Math.pow(1 - distance, 0.75);
                     layer.setPixel(x, y, color);
@@ -60,7 +62,9 @@ export class DrawableLine extends Drawable {
         }
 
         this.line.color = brush.invertedColor;
+        this.polygon.color = brush.invertedColor.copy().setA(0.5);
         layer.wireframes.push(this.line);
+        layer.wireframes.push(this.polygon);
     }
 
     /**

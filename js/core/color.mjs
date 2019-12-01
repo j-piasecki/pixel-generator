@@ -39,6 +39,50 @@ export class Color {
     }
 
     /**
+     * Sets red value of color
+     * @param {Number} r - New red value (0-255)
+     * @returns {Color} - Returns this color
+     */
+    setR(r) {
+        this.r = r;
+
+        return this;
+    }
+
+    /**
+     * Sets green value of color
+     * @param {Number} g - New green value (0-255)
+     * @returns {Color} - Returns this color
+     */
+    setG(g) {
+        this.g = g;
+
+        return this;
+    }
+
+    /**
+     * Sets blue value of color
+     * @param {Number} b - New blue value (0-255)
+     * @returns {Color} - Returns this color
+     */
+    setB(b) {
+        this.b = b;
+
+        return this;
+    }
+
+    /**
+     * Sets alpha value of color
+     * @param {Number} a - New alpha value (0-1)
+     * @returns {Color} - Returns this color
+     */
+    setA(a) {
+        this.a = a;
+
+        return this;
+    }
+
+    /**
      * Blends two specified colors based on their alpha channel
      * @param {Color} bg - Background color
      * @param {Color} fg - Foreground color

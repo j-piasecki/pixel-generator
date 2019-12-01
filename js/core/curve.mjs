@@ -77,6 +77,8 @@ export class Curve {
         canvas.context.lineTo(startX + this.end.x * size, startY + this.end.y * size);
         canvas.context.stroke();
 
+        canvas.context.strokeStyle = this.color.copy().setA(0.5).getRGBAString();
+
         canvas.context.beginPath();
         canvas.context.moveTo(startX + this.start.x * size, startY + this.start.y * size);
         canvas.context.lineTo(startX + this.firstControl.x * size, startY + this.firstControl.y * size);
