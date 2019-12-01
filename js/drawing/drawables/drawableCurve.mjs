@@ -10,6 +10,8 @@ export class DrawableCurve extends Drawable {
 
         this._startThickness = 1;
         this._endThickness = 1;
+
+        this.step = 0.05;
         
         this.generateStrip();
     }
@@ -66,7 +68,7 @@ export class DrawableCurve extends Drawable {
         let prev = this.curve.getPoint(0);
         this.strip.addPoint(new LineStripElement(prev, this._startThickness));
 
-        for (let i = 0; i < 1; i += 0.05) {
+        for (let i = this.step; i < 1; i += this.step) {
             let point = this.curve.getPoint(i);
 
             currentlen += prev.distanceFrom(point);
