@@ -81,17 +81,10 @@ export class Vector2 {
     }
 
     /**
-     * @returns {Vector2}
+     * @returns {Vector2} - Returns normal vector
      */
-    rightPerpendicular() {
+    normal() {
         return new Vector2(-this.y, this.x);
-    }
-
-    /**
-     * @returns {Vector2}
-     */
-    leftPerpendicular() {
-        return new Vector2(this.y, -this.x);
     }
 
     /**

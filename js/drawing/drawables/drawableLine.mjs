@@ -71,7 +71,7 @@ export class DrawableLine extends Drawable {
      * Generates polygon matching line with specified thickness
      */
     generatePolygon() {
-        let perp = Vector2.subtract(this.line.end, this.line.start).leftPerpendicular().normalize();
+        let perp = Vector2.subtract(this.line.end, this.line.start).normal().normalize();
         
         this.polygon.setPoint(0, new Vector2(this.line.start.x - perp.x * this._startThickness * 0.5, this.line.start.y - perp.y * this._startThickness * 0.5));
         this.polygon.setPoint(1, new Vector2(this.line.start.x + perp.x * this._startThickness * 0.5, this.line.start.y + perp.y * this._startThickness * 0.5));

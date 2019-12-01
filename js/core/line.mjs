@@ -16,7 +16,7 @@ export class Line {
      * @returns {Vector2} - Returns normalized perpendicular vector
      */
     get normalVector() {
-        return (Vector2.subtract(this.end, this.start)).rightPerpendicular().normalize();
+        return (Vector2.subtract(this.end, this.start)).normal().normalize();
     }
 
     /**
