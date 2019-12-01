@@ -17,6 +17,24 @@ export class Polygon {
     }
 
     /**
+     * Add new point to the polygon
+     * @param {Vector2} point - Coordinates of the point
+     */
+    addPoint(point) {
+        this.vertices.push(point);
+    }
+
+    /**
+     * Add range of points to the polygon
+     * @param {Array.<Vector2>} points - List of points to be added
+     */
+    addPointRange(points) {
+        for (let i = 0; i < points.length; i++) {
+            this.vertices.push(points[i]);
+        }
+    }
+
+    /**
      * @param {Number} index - Index of the point
      * @returns {Vector2} - Returns point with specified index
      */
