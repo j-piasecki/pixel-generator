@@ -119,7 +119,7 @@ export class CanvasManager {
                     continue;
 
                 this.context.fillStyle = layer.getPixel(x, y).getRGBAString();
-                this.context.fillRect(startX + size * x, startY + size * y, size, size);
+                this.context.fillRect(startX + size * x, startY + size * y, size + 0.5, size + 0.5);
             }
         }
 
