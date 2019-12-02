@@ -20,6 +20,13 @@ export class Line {
     }
 
     /**
+     * @returns {Number} - Returns length of the line
+     */
+    get length() {
+        return this.start.distanceFrom(this.end);
+    }
+
+    /**
      * @param {Vector2} point 
      * @returns {number} - Returns distance between this line and specified point
      */
@@ -78,5 +85,9 @@ export class Line {
      */
     static distance(start, end, point) {
         return Math.abs((end.x - start.x) * (start.y - point.y) - (start.x - point.x) * (end.y - start.y)) / Math.sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y));
+    }
+
+    static signedDistance(start, end, point) {
+        return ((end.x - start.x) * (start.y - point.y) - (start.x - point.x) * (end.y - start.y)) / Math.sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y));
     }
 }
