@@ -1,5 +1,7 @@
 import { Vector2 } from "../../core/vector2.mjs";
+import { Line } from "../../core/line.mjs";
 import { Drawable } from "./drawable.mjs";
+import { DrawableLine } from "./drawableLine.mjs";
 
 export class DrawablePolygon extends Drawable {
     /**
@@ -10,7 +12,9 @@ export class DrawablePolygon extends Drawable {
 
         this.polygon = polygon;
 
-        this.wireframesVisible = true;
+        this.wireframeVisible = true;
+
+        this.generateOutline(1);
     }
 
     /**
@@ -29,7 +33,7 @@ export class DrawablePolygon extends Drawable {
             }
         }
 
-        if (this.wireframesVisible) {
+        if (this.wireframeVisible) {
             this.polygon.color = brush.invertedColor;
             layer.wireframes.push(this.polygon);
         }
@@ -41,25 +45,43 @@ export class DrawablePolygon extends Drawable {
      * @param {Brush} brush - Brush to be used when drawing
      */
     stroke(layer, brush) {
+        for (let i = 0; i < this.outline.length; i++) {
+            this.outline[i].fill(layer, brush);
+        }
+
+        if (this.wireframeVisible) {
+            this.polygon.color = brush.invertedColor;
+            layer.wireframes.push(this.polygon);
+        }
+    }
+
+    /**
+     * Sets outline thickness to specified width
+     * @param {Number} width - New thickness
+     */
+    setStrokeWidth(width) {
+        this.generateOutline(width);
+    }
+
+    /**
+     * Generates drawableLines used for rendering outline
+     * @param {Number} width - Thickness of outline
+     */
+    generateOutline(width) {
+        this.outline = [];
+
         let center = this.polygon.getCenter();
 
         for (let i = 0, j = this.polygon.vertices.length - 1; i < this.polygon.vertices.length; j = i++) {
-            let v1 = Vector2.add(this.polygon.getPoint(j), Vector2.multiplyByNumber(Vector2.subtract(center, this.polygon.getPoint(j)).normalize(), 0.05));
-            let v2 = Vector2.add(this.polygon.getPoint(i), Vector2.multiplyByNumber(Vector2.subtract(center, this.polygon.getPoint(i)).normalize(), 0.05));
-            let current = v1.copy(), step = Vector2.multiplyByNumber(Vector2.subtract(v2, v1).normalize(), 0.5);
-
-            do {
-                if (Math.floor(current.x) >= 0 && Math.floor(current.x) < layer.width && Math.floor(current.y) >= 0 && Math.floor(current.y) < layer.height) {
-                    layer.setPixel(Math.floor(current.x), Math.floor(current.y), brush.layer.getPixel(Math.floor(current.x), Math.floor(current.y)).copy());
-                }
-
-                current = Vector2.add(current, step);
-            } while(current.distanceFrom(v2) > 0 && current.distanceFrom(v2) > current.distanceFrom(Vector2.add(current, step)));
-        }
-
-        if (this.wireframesVisible) {
-            this.polygon.color = brush.invertedColor;
-            layer.wireframes.push(this.polygon);
+            let start = Vector2.subtract(this.polygon.vertices[j], new Vector2(0.5, 0.5));
+            let end = Vector2.subtract(this.polygon.vertices[i], new Vector2(0.5, 0.5));
+    
+            let a = Vector2.add(start, Vector2.multiplyByNumber(Vector2.subtract(center, start).normalize(), 0.4));
+            let b = Vector2.add(end, Vector2.multiplyByNumber(Vector2.subtract(center, end).normalize(), 0.4));
+    
+            this.outline[i] = new DrawableLine(new Line(a, b));
+            this.outline[i].startThickness = this.outline[i].endThickness = width;
+            this.outline[i].wireframeVisible = false;
         }
     }
 }

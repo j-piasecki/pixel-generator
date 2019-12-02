@@ -57,8 +57,11 @@ export class DrawableLine extends Drawable {
                     layer.setPixel(x, y, brush.layer.getPixel(x, y).copy());
                 } else if (distance <= 0.75 && Math.abs(this.line.start.distanceFrom(this.line.end) - this.line.start.distanceFrom(point) - this.line.end.distanceFrom(point)) < 0.5) {
                     let color = brush.layer.getPixel(x, y).copy();
-                    layer.setPixel(x, y, color.setA(color.a * Math.pow(1 - distance, 0.85)));
-                } else if (this.startThickness > 1 || this.endThickness > 1) {
+                    let alpha = color.a * Math.pow(1 - distance, 0.85);
+
+                    if (layer.getPixel(x, y).a == 0 || (layer.getPixel(x, y).r == color.r && layer.getPixel(x, y).g == color.g && layer.getPixel(x, y).b == color.b && layer.getPixel(x, y).a < alpha))
+                        layer.setPixel(x, y, color.setA(alpha));
+                } else {
                     distance = 1;
 
                     for (let i = 0, j = this.polygon.vertices.length - 1; i < this.polygon.vertices.length; j = i++) {
@@ -70,7 +73,10 @@ export class DrawableLine extends Drawable {
 
                     if (distance > 0 && distance < 0.5) {
                         let color = brush.layer.getPixel(x, y).copy();
-                        layer.setPixel(x, y, color.setA(color.a * Math.pow(1 - distance, 2.5)));
+                        let alpha = color.a * Math.pow(1 - distance, 2.5);
+
+                        if (layer.getPixel(x, y).a == 0 || (layer.getPixel(x, y).r == color.r && layer.getPixel(x, y).g == color.g && layer.getPixel(x, y).b == color.b && layer.getPixel(x, y).a < alpha))
+                            layer.setPixel(x, y, color.setA(alpha));
                     }
                 }
             }

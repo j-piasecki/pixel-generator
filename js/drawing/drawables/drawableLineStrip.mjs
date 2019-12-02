@@ -86,6 +86,14 @@ export class DrawableLineStrip extends Drawable {
     stroke(layer, brush) {
         this.drawablePolygon.stroke(layer, brush);
     }
+
+    /**
+     * Sets outline thickness to specified width
+     * @param {Number} width - New thickness
+     */
+    setStrokeWidth(width) {
+        this.drawablePolygon.setStrokeWidth(width);
+    }
 }
 
 export class LineStripElement {

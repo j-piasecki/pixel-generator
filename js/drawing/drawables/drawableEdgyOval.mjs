@@ -27,7 +27,7 @@ export class DrawableEdgyOval extends Drawable {
             this.polygon.setPoint(i, new Vector2(center.x + r * Math.cos(angle * i), center.y + r * Math.sin(angle * i)));
         }
 
-        this.drawaBlePolygon = new DrawablePolygon(this.polygon);
+        this.drawablePolygon = new DrawablePolygon(this.polygon);
     }
 
     /**
@@ -36,7 +36,7 @@ export class DrawableEdgyOval extends Drawable {
      * @param {Brush} brush - Brush to be used when drawing
      */
     fill(layer, brush) {
-        this.drawaBlePolygon.fill(layer, brush);
+        this.drawablePolygon.fill(layer, brush);
 
         this.color = brush.invertedColor;
         layer.wireframes.push(this);
@@ -48,10 +48,18 @@ export class DrawableEdgyOval extends Drawable {
      * @param {Brush} brush - Brush to be used when drawing
      */
     stroke(layer, brush) {
-        this.drawaBlePolygon.stroke(layer, brush);
+        this.drawablePolygon.stroke(layer, brush);
 
         this.color = brush.invertedColor;
         layer.wireframes.push(this);
+    }
+
+    /**
+     * Sets outline thickness to specified width
+     * @param {Number} width - New thickness
+     */
+    setStrokeWidth(width) {
+        this.drawablePolygon.setStrokeWidth(width);
     }
 
     /**

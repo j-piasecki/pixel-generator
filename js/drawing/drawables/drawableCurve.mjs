@@ -59,6 +59,14 @@ export class DrawableCurve extends Drawable {
     }
 
     /**
+     * Sets outline thickness to specified width
+     * @param {Number} width - New thickness
+     */
+    setStrokeWidth(width) {
+        this.strip.setStrokeWidth(width);
+    }
+
+    /**
      * Generates line strip based on curve and specified thickness
      */
     generateStrip() {
