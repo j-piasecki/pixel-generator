@@ -1,5 +1,7 @@
 import { Vector2 } from "../core/vector2.mjs";
+import { Line } from "../core/line.mjs";
 import { Color } from "../core/color.mjs";
+import { DrawableLine } from "./drawables/drawableLine.mjs";
 
 export class Layer {
     /**
@@ -82,6 +84,16 @@ export class Layer {
             this.pixels[x][y] = color;
         }
     }
+
+    line(length, brush) {
+        let line = Line.create(this.state.position, length, this.state.angle);
+        this.state.position = line.end.copy();
+
+        let dline = new DrawableLine(line);
+        dline.startThickness = dline.endThickness = this.state.lineWidth;
+
+        dline.fill(this, brush);
+    }
 }
 
 class State {
@@ -90,7 +102,8 @@ class State {
      */
     constructor() {
         this.position = new Vector2(0, 0);
-        this.angle = 0;
+        this.angle = Math.PI;
+        this.lineWidth = 1;
 
         this.variables = {};
     }
@@ -102,6 +115,7 @@ class State {
         let cp = new State();
         cp.position = this.position.copy();
         cp.angle = this.angle;
+        cp.lineWidth = this.lineWidth;
 
         cp.variables = {};
         for (let attr in this.variables) {
@@ -144,6 +158,14 @@ class State {
     moveTo(point) {
         this.position.x = point.x;
         this.position.y = point.y;
+    }
+
+    /**
+     * Sets line width to specified value
+     * @param {Number} width - New width
+     */
+    setLineWidth(width) {
+        this.lineWidth = width;
     }
 
     /**

@@ -87,7 +87,27 @@ export class Line {
         return Math.abs((end.x - start.x) * (start.y - point.y) - (start.x - point.x) * (end.y - start.y)) / Math.sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y));
     }
 
+    /**
+     * @param {Vector2} start - First point of line
+     * @param {Vector2} end - Second point of line
+     * @param {Vector2} point - Point to be used in calculation
+     * @returns {number} - Returns signed distance between line and specified point
+     */
     static signedDistance(start, end, point) {
         return ((end.x - start.x) * (start.y - point.y) - (start.x - point.x) * (end.y - start.y)) / Math.sqrt((end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y));
+    }
+
+    /**
+     * @param {Vector2} point - Starting point of the line
+     * @param {Number} length - Length of the line
+     * @param {Number} angle - Angle of the line
+     * @returns {Line} - Retruns created line 
+     */
+    static create(point, length, angle) {
+        let line = new Line(point, new Vector2(point.x, point.y + length));
+
+        line.end.rotate(angle, point);
+
+        return line;
     }
 }
