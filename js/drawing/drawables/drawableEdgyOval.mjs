@@ -9,22 +9,28 @@ export class DrawableEdgyOval extends Drawable {
      * @param {Number} minRadius - Radius of inner circle
      * @param {Number} maxRadius - Radius of outer circle
      * @param {Number} points - Number of points
+     * @param {?Number} startingAngle - Angle of the first point in radians
+     * @param {?Number} offset - Offset by which a point can be moved (0-1)
      */
-    constructor(center, minRadius, maxRadius, points) {
+    constructor(center, minRadius, maxRadius, points, startingAngle, offset) {
         super();
 
         this.polygon = new Polygon();
         this.center = center;
         this.minRadius = minRadius;
         this.maxRadius = maxRadius;
+        this.offset = (offset == undefined || offset == null) ? 0 : offset;
+        this.startingAngle = (startingAngle == undefined || startingAngle == null) ? 0 : startingAngle;
 
-        //TODO: random angle option
-        let angle = Math.PI * 2 / points;
+        let angle = Math.PI * 2 / points, sum = 0;
         
         for (let i = 0; i < points; i++) {
             let r = minRadius + (maxRadius - minRadius) * Math.random();
+            let currentAngle = angle * (1 + (1 - Math.random() * 2) * this.offset);
 
-            this.polygon.setPoint(i, new Vector2(center.x + r * Math.cos(angle * i), center.y + r * Math.sin(angle * i)));
+            this.polygon.setPoint(i, new Vector2(center.x + r * Math.cos(this.startingAngle + sum + currentAngle), center.y + r * Math.sin(this.startingAngle + sum + currentAngle)));
+
+            sum += currentAngle;
         }
 
         this.drawablePolygon = new DrawablePolygon(this.polygon);
