@@ -1,6 +1,7 @@
 import { Drawable } from "./drawable.mjs";
-import { DrawableLineStrip, LineStripElement } from "./drawableLineStrip.mjs";
+import { DrawableLineStrip } from "./drawableLineStrip.mjs";
 import { Vector2 } from "../../core/vector2.mjs";
+import { LineStrip, LineStripElement } from "../../core/lineStrip.mjs";
 
 export class DrawableCurve extends Drawable {
     constructor(curve) {
@@ -40,7 +41,7 @@ export class DrawableCurve extends Drawable {
      * @param {Brush} brush - Brush to be used when drawing
      */
     fill(layer, brush) {
-        this.strip.fill(layer, brush);
+        this.drawableStrip.fill(layer, brush);
 
         this.curve.color = brush.invertedColor;
         layer.wireframes.push(this.curve);
@@ -52,7 +53,7 @@ export class DrawableCurve extends Drawable {
      * @param {Brush} brush - Brush to be used when drawing
      */
     stroke(layer, brush) {
-        this.strip.stroke(layer, brush);
+        this.drawableStrip.stroke(layer, brush);
 
         this.curve.color = brush.invertedColor;
         layer.wireframes.push(this.curve);
@@ -63,14 +64,14 @@ export class DrawableCurve extends Drawable {
      * @param {Number} width - New thickness
      */
     setStrokeWidth(width) {
-        this.strip.setStrokeWidth(width);
+        this.drawableStrip.setStrokeWidth(width);
     }
 
     /**
      * Generates line strip based on curve and specified thickness
      */
     generateStrip() {
-        this.strip = new DrawableLineStrip();
+        this.strip = new LineStrip();
         let length = this.curve.getLength(0.05), currentlen = 0, thicknessChange = this._endThickness - this._startThickness;
 
         let prev = this.curve.getPoint(0);
@@ -87,6 +88,7 @@ export class DrawableCurve extends Drawable {
         }
 
         this.strip.addPoint(new LineStripElement(this.curve.getPoint(1), this._endThickness));
-        this.strip.generate();
+        
+        this.drawableStrip = new DrawableLineStrip(this.strip);
     }
 }
