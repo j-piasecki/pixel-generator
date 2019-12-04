@@ -32,7 +32,6 @@ export class Line {
      */
     distanceFrom(point) {
         return Line.distance(this.start, this.end, point);
-        //return Math.abs((this.end.x - this.start.x) * (this.start.y - point.y) - (this.start.x - point.x) * (this.end.y - this.start.y)) / Math.sqrt((this.end.x - this.start.x) * (this.end.x - this.start.x) + (this.end.y - this.start.y) * (this.end.y - this.start.y));
     }
 
     /**

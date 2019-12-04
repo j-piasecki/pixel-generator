@@ -90,7 +90,7 @@ export class Polygon {
     /**
      * Rotates polygon by specified angle (around specified origin)
      * @param {number} angle - Angle of rotation in radians
-     * @param {Vector2} point - Origin of rotation (unnecesary)
+     * @param {?Vector2} point - Origin of rotation
      */
     rotate(angle, point) {
         for (let i = 0; i < this.vertices.length; i++) {

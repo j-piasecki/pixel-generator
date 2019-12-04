@@ -47,13 +47,13 @@ export class Vector2 {
     /**
      * Rotates vector by specified angle (around specified origin)
      * @param {number} angle - Angle of rotation in radians
-     * @param {Vector2} point - Origin of rotation (unnecesary)
+     * @param {?Vector2} point - Origin of rotation
      * @returns {Vector2} - Returns this vector
      */
     rotate(angle, point) {
         let originX = 0, originY = 0;
 
-        if (point != undefined) {
+        if (point != undefined || point != null) {
             originX = point.x;
             originY = point.y;
         }
