@@ -119,7 +119,7 @@ export class CanvasManager {
                     continue;
 
                 this.context.fillStyle = layer.getPixel(x, y).getRGBAString();
-                this.context.fillRect(startX + size * x, startY + size * y, size + 0.5, size + 0.5);
+                this.context.fillRect(startX + size * x, startY + size * y, size + 1, size + 1);
             }
         }
 
@@ -151,8 +151,8 @@ export class CanvasManager {
         let scaleY = this.canvas.height * 0.8 / (this.pixelSize * this.drawingLayer.height);
         let newScale = (scaleX < scaleY) ? scaleX : scaleY;
 
-        let translationX = (this.canvas.width - newScale * this.pixelSize * this.drawingLayer.width) * 0.4;
-        let translationY = (this.canvas.height - newScale * this.pixelSize * this.drawingLayer.height) * 0.35;
+        let translationX = (this.canvas.width - newScale * this.pixelSize * this.drawingLayer.width) * 0.5;
+        let translationY = (this.canvas.height - newScale * this.pixelSize * this.drawingLayer.height) * 0.5;
 
         if (animate) {
             this.scaleFocus.x = (this.translation.x + this.drawingLayer.width * this.pixelSize * 0.5) * this.scale;
