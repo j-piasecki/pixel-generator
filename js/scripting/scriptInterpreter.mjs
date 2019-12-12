@@ -1,6 +1,8 @@
+import { ExpressionEvaluator } from "./expressionEvaluator.mjs";
+
 export class ScriptInterpreter {
     constructor() {
-
+        this.expressionEvaluator = new ExpressionEvaluator();
     }
 
     run(code) {
@@ -8,7 +10,7 @@ export class ScriptInterpreter {
 
         lines.forEach((value, index) => {
             lines[index] = value.trim();
-            console.log(lines[index]);
+            console.log(this.expressionEvaluator.evaluate(lines[index]));
         })
     }
 }
