@@ -1,8 +1,12 @@
 import { ExpressionEvaluator } from "./expressionEvaluator.mjs";
+import { ScriptContext } from "./scriptContext.mjs";
 
 export class ScriptInterpreter {
     constructor() {
         this.expressionEvaluator = new ExpressionEvaluator();
+
+        this.rootContext = new ScriptContext(null);
+        this.rootContext.declareVariable("PI", Math.PI);
     }
 
     run(code) {
@@ -10,7 +14,7 @@ export class ScriptInterpreter {
 
         lines.forEach((value, index) => {
             lines[index] = value.trim();
-            console.log(this.expressionEvaluator.evaluate(lines[index]));
+            console.log(this.expressionEvaluator.evaluate(lines[index], this.rootContext));
         })
     }
 }

@@ -1,3 +1,5 @@
+import { ScriptContext } from "./scriptContext.mjs";
+
 const Operator = {
     ADD: "+",
     SUBTRACT: "-",
@@ -16,8 +18,9 @@ export class ExpressionEvaluator {
     /**
      * Creates stack based on query and evaluates it
      * @param {String} query - Query to be evaluated
+     * @param {ScriptContext} context - Context of the expression
      */
-    evaluate(query) {
+    evaluate(query, context) {
         let index = 0;
         let stack = [];
 
@@ -46,14 +49,15 @@ export class ExpressionEvaluator {
             index = opIndex + 1;
         }
 
-        return this.evaluateStack(stack);
+        return this.evaluateStack(stack, context);
     }
 
     /**
      * Splits compount expression into simpler ones and evaluates them
      * @param {Array} stack - Stack to be evaluated
+     * @param {ScriptContext} context - Context of the expression
      */
-    evaluateStack(stack) {
+    evaluateStack(stack, context) {
         let start = stack.indexOf(Operator.OPEN_PARENTHESIS);
 
         while (start != -1) {
@@ -79,45 +83,55 @@ export class ExpressionEvaluator {
             }
             
             if (start > 0 && stack[start - 1] != Operator.ADD && stack[start - 1] != Operator.SUBTRACT && stack[start - 1] != Operator.MULTIPLY && stack[start - 1] != Operator.DIVIDE) {
-                stack.splice(start - 1, index - start + 1, this.evaluateFunction(stack[start - 1], stack.slice(start + 1, index - 1)));
+                stack.splice(start - 1, index - start + 1, this.evaluateFunction(stack[start - 1], stack.slice(start + 1, index - 1), new ScriptContext(context)));
                 start = stack.indexOf(Operator.OPEN_PARENTHESIS);
             } else {
-                stack.splice(start, index - start, ...this.evaluateStack(stack.slice(start + 1, index - 1)));
+                stack.splice(start, index - start, ...this.evaluateStack(stack.slice(start + 1, index - 1), context));
                 start = stack.indexOf(Operator.OPEN_PARENTHESIS);
             }
         }
 
         if (start == -1) {
-            
-            return this.evaluateExpression(stack);
+            return this.evaluateExpression(stack, context);
         }
     }
 
     /**
      * Evaluates simple expressions
      * @param {Array} stack - Stack to be evaluated
+     * @param {ScriptContext} context - Context of the expression
      */
-    evaluateExpression(stack) {
+    evaluateExpression(stack, context) {
+        if (stack.length == 1) {
+            let result = this.getValue(stack, 0, context);
+
+            if (Array.isArray(result)) {
+                return ["\"", result[0], "\""];
+            } else {
+                return result;
+            }
+        }
+
         let index = stack.indexOf(Operator.MULTIPLY);
 
         while (index != -1) {
-            stack.splice(index - 1, 3, this.getValue(stack, index - 1) * this.getValue(stack, index + 1));
+            stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) * this.getValue(stack, index + 1, context));
             index = stack.indexOf(Operator.MULTIPLY);
         }
 
         index = stack.indexOf(Operator.DIVIDE);
 
         while (index != -1) {
-            stack.splice(index - 1, 3, this.getValue(stack, index - 1) / this.getValue(stack, index + 1));
+            stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) / this.getValue(stack, index + 1, context));
             index = stack.indexOf(Operator.DIVIDE);
         }
 
         index = stack.indexOf(Operator.ADD);
 
         while (index != -1) {
-            let arg1 = this.getValue(stack, index - 1), arg2 = this.getValue(stack, index + 1);
+            let arg1 = this.getValue(stack, index - 1, context), arg2 = this.getValue(stack, index + 1, context);
             let result, start, end;
-
+            
             if (Array.isArray(arg1) && Array.isArray(arg2)) {
                 result = ["\"", arg1[0] + arg2[0], "\""];
                 start = arg1[1];
@@ -143,7 +157,7 @@ export class ExpressionEvaluator {
         index = stack.indexOf(Operator.SUBTRACT);
 
         while (index != -1) {
-            stack.splice(index - 1, 3, this.getValue(stack, index - 1) - this.getValue(stack, index + 1));
+            stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) - this.getValue(stack, index + 1, context));
             index = stack.indexOf(Operator.SUBTRACT);
         }
 
@@ -154,8 +168,9 @@ export class ExpressionEvaluator {
      * Evaluates function
      * @param {String} name - Name of the function
      * @param {String} args - Arguments of the function
+     * @param {ScriptContext} context - Context of the function
      */
-    evaluateFunction(name, args) {
+    evaluateFunction(name, args, context) {
         console.log("evaluate: " + name + "(" + args + ")");
 
         return 0;
@@ -165,8 +180,9 @@ export class ExpressionEvaluator {
      * Calculates value of single item
      * @param {Array} stack - Currently evaluated stack
      * @param {Number} index - Index of the item
+     * @param {ScriptContext} context - Context of the expression
      */
-    getValue(stack, index) {
+    getValue(stack, index, context) {
         if (stack[index] == Operator.QUOTE) {
             if (stack[index + 1] == Operator.ADD || stack[index + 1] == Operator.SUBTRACT || stack[index + 1] == Operator.MULTIPLY || stack[index + 1] == Operator.DIVIDE) {
                 return [stack[index - 1], index - 2];
@@ -180,10 +196,14 @@ export class ExpressionEvaluator {
 
             if (!Number.isNaN(parseFloat(value))) {
                 return Number(value);
-            } else if (value == "PI") {
-                return Math.PI;
             } else {
-                return [value, index];
+                let variable = context.getVariable(value);
+
+                if (typeof(variable) == "string" || variable instanceof String) {
+                    return [variable, index];
+                }
+
+                return variable;
             }
         }
     }
