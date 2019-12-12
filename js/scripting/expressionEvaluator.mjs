@@ -5,6 +5,7 @@ const Operator = {
     SUBTRACT: "-",
     MULTIPLY: "*",
     DIVIDE: "/",
+    POWER: "^",
     OPEN_PARENTHESIS: "(",
     CLOSE_PARENTHESIS: ")",
     QUOTE: "\""
@@ -92,6 +93,9 @@ export class ExpressionEvaluator {
         }
 
         if (start == -1) {
+            while (stack.indexOf(Operator.CLOSE_PARENTHESIS) != -1)
+                stack.splice(stack.indexOf(Operator.CLOSE_PARENTHESIS), 1);
+
             return this.evaluateExpression(stack, context);
         }
     }
@@ -108,11 +112,18 @@ export class ExpressionEvaluator {
             if (Array.isArray(result)) {
                 return ["\"", result[0], "\""];
             } else {
-                return result;
+                return [result];
             }
         }
 
-        let index = stack.indexOf(Operator.MULTIPLY);
+        let index = stack.indexOf(Operator.POWER);
+
+        while (index != -1) {
+            stack.splice(index - 1, 3, Math.pow(this.getValue(stack, index - 1, context), this.getValue(stack, index + 1, context)));
+            index = stack.indexOf(Operator.MULTIPLY);
+        }
+
+        index = stack.indexOf(Operator.MULTIPLY);
 
         while (index != -1) {
             stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) * this.getValue(stack, index + 1, context));
@@ -225,7 +236,7 @@ export class ExpressionEvaluator {
             }
         }
 
-        return [query.indexOf(Operator.ADD, index), query.indexOf(Operator.SUBTRACT, index), query.indexOf(Operator.MULTIPLY, index), query.indexOf(Operator.DIVIDE, index), query.indexOf(Operator.OPEN_PARENTHESIS, index), query.indexOf(Operator.CLOSE_PARENTHESIS, index), query.indexOf(Operator.QUOTE, index)].filter(x => { return x != -1 }).sort((a, b) => { return a - b; })[0];
+        return [query.indexOf(Operator.ADD, index), query.indexOf(Operator.SUBTRACT, index), query.indexOf(Operator.MULTIPLY, index), query.indexOf(Operator.DIVIDE, index), query.indexOf(Operator.OPEN_PARENTHESIS, index), query.indexOf(Operator.CLOSE_PARENTHESIS, index), query.indexOf(Operator.QUOTE, index), query.indexOf(Operator.POWER, index)].filter(x => { return x != -1 }).sort((a, b) => { return a - b; })[0];
     }
 
     /**
