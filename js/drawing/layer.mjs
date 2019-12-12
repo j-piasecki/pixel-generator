@@ -85,6 +85,11 @@ export class Layer {
         }
     }
 
+    /**
+     * Draws line with specified length
+     * @param {Number} length - Length of the line
+     * @param {Brush} brush - Brush used to draw the line
+     */
     line(length, brush) {
         let line = Line.create(this.state.position, length, this.state.angle);
         this.state.position = line.end.copy();
