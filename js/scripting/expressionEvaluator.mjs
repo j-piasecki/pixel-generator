@@ -13,7 +13,7 @@ const Operator = {
 
 export class ExpressionEvaluator {
     constructor() {
-        
+
     }
 
     /**
@@ -84,7 +84,18 @@ export class ExpressionEvaluator {
             }
             
             if (start > 0 && stack[start - 1] != Operator.ADD && stack[start - 1] != Operator.SUBTRACT && stack[start - 1] != Operator.MULTIPLY && stack[start - 1] != Operator.DIVIDE) {
-                stack.splice(start - 1, index - start + 1, this.evaluateFunction(stack[start - 1], stack.slice(start + 1, index - 1), new ScriptContext(context)));
+                let end = start + 1;
+                nesting = 1;
+
+                while (nesting > 0) {
+                    if (stack[end] == Operator.OPEN_PARENTHESIS) nesting++;
+                    if (stack[end] == Operator.CLOSE_PARENTHESIS) nesting--;
+
+                    end++;
+                }
+                
+                stack.splice(start - 1, end, this.evaluateFunction(stack[start - 1], stack.slice(start + 1, end - 1), context));
+                
                 start = stack.indexOf(Operator.OPEN_PARENTHESIS);
             } else {
                 stack.splice(start, index - start, ...this.evaluateStack(stack.slice(start + 1, index - 1), context));
@@ -113,6 +124,13 @@ export class ExpressionEvaluator {
                 return ["\"", result[0], "\""];
             } else {
                 return [result];
+            }
+        }
+
+        for (let i = 0; i < stack.length; i++) {
+            if (stack[i] == Operator.SUBTRACT && (i == 0 || this.isOperator(stack[i - 1]))) {
+                stack.splice(i, 2, -this.getValue(stack, i + 1, context));
+                i--;
             }
         }
 
@@ -182,9 +200,40 @@ export class ExpressionEvaluator {
      * @param {ScriptContext} context - Context of the function
      */
     evaluateFunction(name, args, context) {
-        console.log("evaluate: " + name + "(" + args + ")");
+        if (args.length > 1) {
+            let start = 0, nesting = 0;
+            let newArgs = [];
+            
+            for (let i = 0; i < args.length; i++) {
+                if (args[i] == Operator.OPEN_PARENTHESIS) nesting++;
+                if (args[i] == Operator.CLOSE_PARENTHESIS) nesting--;
 
-        return 0;
+                if (nesting == 0 && args[i].indexOf(",") != -1) {
+                    let split = args[i].split(",");
+                    args.splice(i, 1, split[0].trim(), "|", split[1].trim());
+                    i += 2;
+                }
+            }
+            args = args.filter(x => x);
+
+            for (let i = 0; i < args.length; i++) {
+                if (args[i] == "|" || i == args.length - 1) {
+                    newArgs.push(this.evaluate(args.slice(start, i + (i == args.length - 1 ? 1 : 0)).join(""), context)[0]);
+
+                    start = i + 1;
+                }
+            }
+
+            args = newArgs;
+        } else if (args.length == 1) {
+            args = args[0].split(",");
+
+            for (let i = 0; i < args.length; i++) {
+                args[i] = this.evaluate(args[i], context)[0];
+            }
+        }
+
+        return context.callFunction(name, args, this);
     }
 
     /**
@@ -204,6 +253,8 @@ export class ExpressionEvaluator {
             return Number(stack[index]);
         } else {
             let value = stack[index];
+
+            if (typeof(value) == "object" || value == undefined) return value;
 
             if (!Number.isNaN(parseFloat(value))) {
                 return Number(value);
@@ -237,6 +288,20 @@ export class ExpressionEvaluator {
         }
 
         return [query.indexOf(Operator.ADD, index), query.indexOf(Operator.SUBTRACT, index), query.indexOf(Operator.MULTIPLY, index), query.indexOf(Operator.DIVIDE, index), query.indexOf(Operator.OPEN_PARENTHESIS, index), query.indexOf(Operator.CLOSE_PARENTHESIS, index), query.indexOf(Operator.QUOTE, index), query.indexOf(Operator.POWER, index)].filter(x => { return x != -1 }).sort((a, b) => { return a - b; })[0];
+    }
+
+    /**
+     * Checks if provided expression is an opertator
+     * @param {String} exp - Expression
+     */
+    isOperator(exp) {
+        let keys = Object.keys(Operator);
+
+        for (let i = 0; i < keys.length; i++) {
+            if (Operator[keys[i]] == exp) return true;
+        }
+
+        return false;
     }
 
     /**

@@ -7,6 +7,9 @@ export class ScriptContext {
         this.findRoot();
 
         this.variables = {};
+        this.functions = [];
+
+        this.logErrorInfo = true;
     }
 
     /**
@@ -14,11 +17,13 @@ export class ScriptContext {
      * @returns {Object} - Returns value of the specified variable
      */
     getVariable(name) {
-        if (this.variables[name])
+        if (this.variables[name] != undefined)
             return this.variables[name];
         
         if (this.parent != null)
             return this.parent.getVariable(name);
+        else if (this.logErrorInfo)
+            console.log("Usage of undeclared variable: " + name);
     }
 
     /**
@@ -31,6 +36,8 @@ export class ScriptContext {
             this.variables[name] = value;
         else if (this.parent != null)
             this.parent.setVariable(name, value);
+        else if (this.logErrorInfo)
+            console.log("Usage of undeclared variable: " + name);
     }
 
     /**
@@ -40,6 +47,25 @@ export class ScriptContext {
      */
     declareVariable(name, value) {
         this.variables[name] = value;
+    }
+
+    /**
+     * Calls function with specified name and passes the arguments
+     * @param {String} name - Name of the function
+     * @param {Array} args - Array of arguments
+     * @param {ExpressionEvaluator} evaluator - Expression evaluator
+     */
+    callFunction(name, args, evaluator) {
+        for (let i = 0; i < this.functions.length; i++) {
+            if (this.functions[i].name == name) {
+                return this.functions[i].execute(this.root, args, evaluator);
+            }
+        }
+
+        if (this.parent != null)
+            return this.parent.callFunction(name, args, evaluator);
+        else if (this.logErrorInfo)
+            console.log("Usage of undeclared function: " + name);
     }
 
     /**
@@ -57,5 +83,7 @@ export class ScriptContext {
         }
 
         this.root = previous;
+
+        if (this.root == null) this.root = this;
     }
 }
