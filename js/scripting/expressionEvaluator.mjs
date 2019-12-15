@@ -8,12 +8,22 @@ const Operator = {
     POWER: "^",
     OPEN_PARENTHESIS: "(",
     CLOSE_PARENTHESIS: ")",
-    QUOTE: "\""
+    QUOTE: "\"",
+
+    OR: "||",
+    AND: "&&",
+    EQUAL: "==",
+    NOT_EQUAL: "!=",
+    GREATER: ">",
+    GREATER_OR_EQUAL: ">=",
+    LESSER: "<",
+    LESSER_OR_EQUAL: "<=",
+    NEGATION: "!"
 }
 
 export class ExpressionEvaluator {
     constructor() {
-
+        
     }
 
     /**
@@ -26,10 +36,11 @@ export class ExpressionEvaluator {
         let stack = [];
 
         while (index >= 0 && index < query.length) {
-            let opIndex = this.findNextOperator(stack, query, index);
-            if (opIndex == -1) break;
-            if (opIndex == undefined) {
-                stack.push(query.substring(index, opIndex).trim());
+            let nextOp = this.findNextOperator(stack, query, index);
+            let opIndex = (nextOp == undefined) ? -1 : nextOp[0];
+
+            if (nextOp == undefined) {
+                stack.push(query.substring(index).trim());
                 break;
             }
 
@@ -42,12 +53,12 @@ export class ExpressionEvaluator {
                         stack.push(operand);
                 }
 
-                stack.push(query.charAt(opIndex));
+                stack.push(nextOp[1]);
             } else {
-                stack.push(query.charAt(opIndex));
+                stack.push(nextOp[1]);
             }
 
-            index = opIndex + 1;
+            index = opIndex + nextOp[1].length;
         }
 
         return this.evaluateStack(stack, context);
@@ -60,7 +71,7 @@ export class ExpressionEvaluator {
      */
     evaluateStack(stack, context) {
         let start = stack.indexOf(Operator.OPEN_PARENTHESIS);
-
+        
         while (start != -1) {
             let index = start + 1;
             let nesting = 1;
@@ -83,7 +94,7 @@ export class ExpressionEvaluator {
                 }
             }
             
-            if (start > 0 && stack[start - 1] != Operator.ADD && stack[start - 1] != Operator.SUBTRACT && stack[start - 1] != Operator.MULTIPLY && stack[start - 1] != Operator.DIVIDE) {
+            if (start > 0 && !this.isOperator(stack[start - 1])) {
                 let end = start + 1;
                 nesting = 1;
 
@@ -127,6 +138,7 @@ export class ExpressionEvaluator {
             }
         }
 
+        //Handle unary minus operator
         for (let i = 0; i < stack.length; i++) {
             if (stack[i] == Operator.SUBTRACT && (i == 0 || this.isOperator(stack[i - 1]))) {
                 stack.splice(i, 2, -this.getValue(stack, i + 1, context));
@@ -134,6 +146,16 @@ export class ExpressionEvaluator {
             }
         }
 
+        //Handle unary negation operator
+        for (let i = 0; i < stack.length; i++) {
+            if (stack[i] == Operator.NEGATION && (i == 0 || this.isOperator(stack[i - 1]))) {
+                let val = this.getValue(stack, i + 1, context);
+                stack.splice(i, 2, (val == false || val == undefined || val == null));
+                i--;
+            }
+        }
+
+        //Handle power operator
         let index = stack.indexOf(Operator.POWER);
 
         while (index != -1) {
@@ -141,6 +163,7 @@ export class ExpressionEvaluator {
             index = stack.indexOf(Operator.MULTIPLY);
         }
 
+        //Handle multiply operator
         index = stack.indexOf(Operator.MULTIPLY);
 
         while (index != -1) {
@@ -148,6 +171,7 @@ export class ExpressionEvaluator {
             index = stack.indexOf(Operator.MULTIPLY);
         }
 
+        //Handle divide operator
         index = stack.indexOf(Operator.DIVIDE);
 
         while (index != -1) {
@@ -155,6 +179,7 @@ export class ExpressionEvaluator {
             index = stack.indexOf(Operator.DIVIDE);
         }
 
+        //handle add operator
         index = stack.indexOf(Operator.ADD);
 
         while (index != -1) {
@@ -183,11 +208,120 @@ export class ExpressionEvaluator {
             index = stack.indexOf(Operator.ADD);
         }
 
+        //Handle subtract operator
         index = stack.indexOf(Operator.SUBTRACT);
 
         while (index != -1) {
             stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) - this.getValue(stack, index + 1, context));
             index = stack.indexOf(Operator.SUBTRACT);
+        }
+
+        return this.evaluateLogic(stack, context);
+    }
+
+    /**
+     * Evaluates logical expressions
+     * @param {Array} stack - Stack to be evaluated
+     * @param {ScriptContext} context - Context of the expression
+     */
+    evaluateLogic(stack, context) {
+        //Check whether there are logical connectives in stack, if not then handle logical operations, else handle connectives
+        if (stack.indexOf(Operator.AND) == -1 && stack.indexOf(Operator.OR) == -1) {
+            //Handle equal operation
+            let index = stack.indexOf(Operator.EQUAL);
+
+            while (index != -1) {
+                stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) == this.getValue(stack, index + 1, context));
+                index = stack.indexOf(Operator.EQUAL);
+            }
+
+            //Handle not equal operation
+            index = stack.indexOf(Operator.NOT_EQUAL);
+
+            while (index != -1) {
+                stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) != this.getValue(stack, index + 1, context));
+                index = stack.indexOf(Operator.NOT_EQUAL);
+            }
+
+            //Handle greater or equal operation
+            index = stack.indexOf(Operator.GREATER_OR_EQUAL);
+
+            while (index != -1) {
+                stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) >= this.getValue(stack, index + 1, context));
+                index = stack.indexOf(Operator.GREATER_OR_EQUAL);
+            }
+
+            //Handle lesser or equal operation
+            index = stack.indexOf(Operator.LESSER_OR_EQUAL);
+
+            while (index != -1) {
+                stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) <= this.getValue(stack, index + 1, context));
+                index = stack.indexOf(Operator.LESSER_OR_EQUAL);
+            }
+            
+            //Handle greater operation
+            index = stack.indexOf(Operator.GREATER);
+
+            while (index != -1) {
+                stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) > this.getValue(stack, index + 1, context));
+                index = stack.indexOf(Operator.GREATER);
+            }
+
+            //Handle lesser operation
+            index = stack.indexOf(Operator.LESSER);
+
+            while (index != -1) {
+                stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) < this.getValue(stack, index + 1, context));
+                index = stack.indexOf(Operator.LESSER);
+            }
+        } else {
+            index = 0;
+            for (let i = 0; i < stack.length; i++) {
+                //Handle or connective
+                if (stack[i] == Operator.OR) {
+                    let value = this.evaluateExpression(stack.slice(0, i), context)[0];
+
+                    //If any of the expressions is true return true, else replace them with false and continue evaluation
+                    if (value != false && value != undefined && value != null) { return [true]; }
+                    else {
+                        let nextOr = stack.indexOf(Operator.OR, i + 1), nextAnd = stack.indexOf(Operator.AND, i + 1), next = 0;
+                        if (nextOr == -1 && nextAnd == -1) next = stack.length;
+                        else if (nextOr == -1) next = nextAnd;
+                        else if (nextAnd == -1) next = nextOr;
+                        else next = (nextOr < nextAnd) ? nextOr : nextAnd;
+
+                        value = this.evaluateExpression(stack.slice(i + 1, next), context)[0];
+                        
+                        if (value != false && value != undefined && value != null) { return [true]; }
+                        else {
+                            stack.splice(0, next, false);
+                            i = 0;
+                        }
+                    }
+                } 
+                //Handle and connective
+                else if (stack[i] == Operator.AND) {
+                    let value = this.evaluateExpression(stack.slice(0, i), context)[0];
+
+                    //If any of the expressions is false return false, else replace them with true and continue evaluation
+                    if (value == false || value == undefined || value == null) { return [false]; }
+                    else {
+                        let nextOr = stack.indexOf(Operator.OR, i + 1), nextAnd = stack.indexOf(Operator.AND, i + 1), next = 0;
+                        if (nextOr == -1 && nextAnd == -1) next = stack.length;
+                        else if (nextOr == -1) next = nextAnd;
+                        else if (nextAnd == -1) next = nextOr;
+                        else next = (nextOr < nextAnd) ? nextOr : nextAnd;
+
+                        value = this.evaluateExpression(stack.slice(i + 1, next), context)[0];
+                        
+                        if (value == false || value == undefined || value == null) { return [false]; }
+                        else {
+                            stack.splice(0, next, true);
+                            i = 0;
+                        }
+                    }
+                }
+            }
         }
 
         return stack;
@@ -287,7 +421,14 @@ export class ExpressionEvaluator {
             }
         }
 
-        return [query.indexOf(Operator.ADD, index), query.indexOf(Operator.SUBTRACT, index), query.indexOf(Operator.MULTIPLY, index), query.indexOf(Operator.DIVIDE, index), query.indexOf(Operator.OPEN_PARENTHESIS, index), query.indexOf(Operator.CLOSE_PARENTHESIS, index), query.indexOf(Operator.QUOTE, index), query.indexOf(Operator.POWER, index)].filter(x => { return x != -1 }).sort((a, b) => { return a - b; })[0];
+        let indexes = [];
+        let keys = Object.keys(Operator);
+
+        for (let i = 0; i < keys.length; i++) {
+            indexes.push([query.indexOf(Operator[keys[i]], index), Operator[keys[i]]]);
+        }
+
+        return indexes.filter(x => { return x[0] != -1 }).sort((a, b) => { if (a[0] == b[0]) return b[1].length - a[1].length; else return a[0] - b[0]; })[0];
     }
 
     /**

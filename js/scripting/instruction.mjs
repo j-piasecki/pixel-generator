@@ -28,13 +28,6 @@ export class Instruction {
 
             context.setVariable(name, evaluator.evaluate(value, context)[0]);
         } else {
-            /*let args = this.expression.substring(this.expression.indexOf("(") + 1, this.expression.lastIndexOf(")")).split(",");
-
-            for (let i = 0; i < args.length; i++) {
-                args[i] = evaluator.evaluate(args[i], context)[0];
-            }
-
-            context.callFunction(this.expression.substring(0, this.expression.indexOf("(")), args, evaluator);*/
             evaluator.evaluate(this.expression, context);
         }
 
