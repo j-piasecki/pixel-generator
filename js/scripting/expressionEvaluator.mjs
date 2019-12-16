@@ -8,6 +8,9 @@ const Operator = {
     POWER: "^",
     OPEN_PARENTHESIS: "(",
     CLOSE_PARENTHESIS: ")",
+    OPEN_BRACKET: "[",
+    CLOSE_BRACKET: "]",
+    COLON: ":",
     QUOTE: "\"",
 
     OR: "||",
@@ -60,7 +63,7 @@ export class ExpressionEvaluator {
 
             index = opIndex + nextOp[1].length;
         }
-
+        
         return this.evaluateStack(stack, context);
     }
 
@@ -155,8 +158,32 @@ export class ExpressionEvaluator {
             }
         }
 
+        //Handle random numbers
+        let index = stack.indexOf(Operator.OPEN_BRACKET);
+        
+        while (index != -1) {
+            let close = stack.indexOf(Operator.CLOSE_BRACKET, index);
+            let colon = stack.indexOf(Operator.COLON, index) + 1;
+            let nextColon = stack.indexOf(Operator.COLON, colon);
+            let n1 = this.evaluateStack(stack.slice(index + 1, colon - 1), context)[0], n2 = this.evaluateStack(stack.slice(colon, close), context)[0];
+            let value = 0;
+
+            if (nextColon == -1) {
+                if (Number.isInteger(n1) && Number.isInteger(n2))
+                    value = Math.round(n1 + (n2 - n1) * Math.random());
+                else
+                    value = n1 + (n2 - n1) * Math.random();
+            } else {
+                if (stack[nextColon + 1] == "d")
+                    value = n1 + (n2 - n1) * Math.random();
+            }
+
+            stack.splice(index, close - index + 1, value);
+            index = stack.indexOf(Operator.OPEN_BRACKET);
+        }
+
         //Handle power operator
-        let index = stack.indexOf(Operator.POWER);
+        index = stack.indexOf(Operator.POWER);
 
         while (index != -1) {
             stack.splice(index - 1, 3, Math.pow(this.getValue(stack, index - 1, context), this.getValue(stack, index + 1, context)));
@@ -343,8 +370,14 @@ export class ExpressionEvaluator {
                 if (args[i] == Operator.CLOSE_PARENTHESIS) nesting--;
 
                 if (nesting == 0 && args[i].indexOf(",") != -1) {
-                    let split = args[i].split(",");
-                    args.splice(i, 1, split[0].trim(), "|", split[1].trim());
+                    let split = args[i].split(","), toAdd = [];
+
+                    for (let j = 0; j < split.length; j++) {
+                        toAdd.push(split[j].trim());
+                        if (j != split.length - 1) toAdd.push("|");
+                    }
+                    
+                    args.splice(i, 1, ...toAdd);
                     i += 2;
                 }
             }
@@ -387,20 +420,15 @@ export class ExpressionEvaluator {
             return Number(stack[index]);
         } else {
             let value = stack[index];
-
             if (typeof(value) == "object" || value == undefined) return value;
 
-            if (!Number.isNaN(parseFloat(value))) {
-                return Number(value);
-            } else {
-                let variable = context.getVariable(value);
+            let variable = context.getVariable(value);
 
-                if (typeof(variable) == "string" || variable instanceof String) {
-                    return [variable, index];
-                }
-
-                return variable;
+            if (typeof(variable) == "string" || variable instanceof String) {
+                return [variable, index];
             }
+
+            return variable;
         }
     }
 
