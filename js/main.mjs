@@ -20,6 +20,7 @@ import { Layer } from "./drawing/layer.mjs";
 
 var canvas = document.getElementById("canvas");
 var canvasManager = new CanvasManager(canvas);
+var scriptInterpreter = new ScriptInterpreter(canvasManager);
 canvasManager.init(64, 64);
 
 var codeInput = document.getElementById("code-area");
@@ -31,8 +32,6 @@ codeInput.onkeydown = e => {
         codeInput.selectionEnd = s + 1; 
     }
 }
-
-var scriptInterpreter = new ScriptInterpreter(canvasManager);
 
 window.onload = () => {
     document.getElementById("action-center").addEventListener("click", (e) => { canvasManager.centerContent(true); });

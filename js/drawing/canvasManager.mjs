@@ -35,6 +35,7 @@ export class CanvasManager {
     init(width, height) {
         this.drawingLayer = new Layer(width, height);
         this.layerComposer = new LayerComposer(this.drawingLayer);
+        this.currentLayer = this.layerComposer.nextLayer();
         this.variables = {}; //global variables
 
         this.centerContent(false);
@@ -50,7 +51,9 @@ export class CanvasManager {
      * @returns {Layer} - Returns new layer and puts it on top of the drawing stack
      */
     get nextLayer() {
-        return this.layerComposer.nextLayer();
+        this.currentLayer = this.layerComposer.nextLayer();
+
+        return this.currentLayer;
     }
 
     /**

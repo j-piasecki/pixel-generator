@@ -1,4 +1,10 @@
 import { CanvasManager } from "../drawing/canvasManager.mjs";
+import { BrushSolidColor } from "../drawing/brushes/brushSolidColor.mjs";
+import { BrushWhiteNoise } from "../drawing/brushes/brushWhiteNoise.mjs";
+import { BrushCircularGradient } from "../drawing/brushes/brushCircularGradient.mjs";
+import { BrushLinearGradient } from "../drawing/brushes/brushLinearGradient.mjs";
+import { DrawableCreator } from "../drawing/drawables/drawableCreator.mjs";
+import { DrawableEdgyOval } from "../drawing/drawables/drawableEdgyOval.mjs";
 import { ExpressionEvaluator } from "./expressionEvaluator.mjs";
 import { ScriptContext } from "./scriptContext.mjs";
 import { ScriptBlock } from "./scriptBlock.mjs";
@@ -6,6 +12,11 @@ import { Instruction } from "./instruction.mjs";
 import { IfInstruction } from "./ifInstruction.mjs";
 import { Function } from "./function.mjs";
 import { Vector2 } from "../core/vector2.mjs";
+import { Color } from "../core/color.mjs";
+import { Polygon } from "../core/polygon.mjs";
+import { Line } from "../core/line.mjs";
+import { LineStrip, LineStripElement } from "../core/lineStrip.mjs";
+import { Curve } from "../core/curve.mjs";
 
 export class ScriptInterpreter {
     /**
@@ -63,6 +74,31 @@ export class ScriptInterpreter {
 
         this.rootContext.functions.push(new Function("function debug(a1, a2, ...)").setCustomExecute(function(context, args, evaluator) { console.log(args.join(" ")); }));
         this.rootContext.functions.push(new Function("function init(x, y)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.init(args[0], args[1]); }));
-        this.rootContext.functions.push(new Function("function V(x, y, rX, rY)").setCustomExecute(function(context, args, evaluator) { let v = new Vector2(args[0], args[1]); if (args[2] != undefined) { if (args[3] != undefined) { v.setRange(args[2], args[3]); } else { v.setRadius(args[2]); } } return v; }));
+        this.rootContext.functions.push(new Function("function nextLayer()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.nextLayer; }));
+        this.rootContext.functions.push(new Function("function save()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.save(); }));
+        this.rootContext.functions.push(new Function("function restore()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.restore(); }));
+        this.rootContext.functions.push(new Function("function clear()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.clear(); }));
+        this.rootContext.functions.push(new Function("function setStrokeWidth(width)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.state.setLineWidth(args[0]); }));
+        this.rootContext.functions.push(new Function("function move(length)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.state.move(args[0]); }));
+        this.rootContext.functions.push(new Function("function moveTo(point)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.state.moveTo(args[0]); }));
+        this.rootContext.functions.push(new Function("function rotate(angle)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.state.rotate(args[0]); }));
+        this.rootContext.functions.push(new Function("function setRotation(angle)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.state.setRotation(args[0]); }));
+        this.rootContext.functions.push(new Function("function line(length, brush)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.line(args[0], args[1]); }));
+        this.rootContext.functions.push(new Function("function fill(obj, brush)").setCustomExecute(function(context, args, evaluator) { DrawableCreator.create(args[0]).fill(body.canvasManager.currentLayer, args[1]); }));
+        this.rootContext.functions.push(new Function("function stroke(obj, brush, thickness)").setCustomExecute(function(context, args, evaluator) { let d = DrawableCreator.create(args[0]); d.setStrokeWidth((args.length > 2) ? args[2] : body.canvasManager.currentLayer.state.lineWidth); d.stroke(body.canvasManager.currentLayer, args[1]); }));
+        
+        this.rootContext.functions.push(new Function("function Point(x, y, rX, rY)").setCustomExecute(function(context, args, evaluator) { let v = new Vector2(args[0], args[1]); if (args[2] != undefined) { if (args[3] != undefined) { v.setRange(args[2], args[3]); } else { v.setRadius(args[2]); } } return v; }));
+        this.rootContext.functions.push(new Function("function Color(r, g, b, a)").setCustomExecute(function(context, args, evaluator) { return new Color(args[0], args[1], args[2], (args.length == 3) ? 1 : args[3]); }));
+        this.rootContext.functions.push(new Function("function Polygon(v1, v2, ...)").setCustomExecute(function(context, args, evaluator) { let p = new Polygon(); for (let i = 0; i < args.length; i++) p.addPoint(args[i].next()); return p; }));
+        this.rootContext.functions.push(new Function("function Line(start, end)").setCustomExecute(function(context, args, evaluator) { return new Line(args[0].next(), args[1].next()); }));
+        this.rootContext.functions.push(new Function("function LineStrip(point, thickness, ...)").setCustomExecute(function(context, args, evaluator) { let l = new LineStrip(); for (let i = 0; i < args.length; i += 2) l.addPoint(new LineStripElement(args[i], args[i + 1])); return l; }));
+        this.rootContext.functions.push(new Function("function Curve(start, end, fc, sc)").setCustomExecute(function(context, args, evaluator) { let c = new Curve(args[0].next(), args[1].next()); c.firstControl = args[2].next(); c.secondControl = args[3].next(); return c; }));
+        
+        this.rootContext.functions.push(new Function("function EdgyOval(center, minr, maxr, points, startangle, offset)").setCustomExecute(function(context, args, evaluator) { return new DrawableEdgyOval(args[0].next(), args[1], args[2], args[3], (args.length > 4) ? args[4] : 0, (args.length > 5) ? args[5] : 0); }));
+        
+        this.rootContext.functions.push(new Function("function SolidColor(color)").setCustomExecute(function(context, args, evaluator) { return new BrushSolidColor(body.canvasManager.drawingLayer.width, body.canvasManager.drawingLayer.height, args[0]); }));
+        this.rootContext.functions.push(new Function("function WhiteNoise(color)").setCustomExecute(function(context, args, evaluator) { return new BrushWhiteNoise(body.canvasManager.drawingLayer.width, body.canvasManager.drawingLayer.height, args[0]); }));
+        this.rootContext.functions.push(new Function("function CircularGradient(center, radius, colors...)").setCustomExecute(function(context, args, evaluator) { let b = new BrushCircularGradient(body.canvasManager.drawingLayer.width, body.canvasManager.drawingLayer.height, args[0].next(), args[1], args[2], args[args.length - 1]); for (let i = 3; i < args.length - 1; i++) b.addStep((i - 2) / (args.length - 3), args[i]); return b; }));
+        this.rootContext.functions.push(new Function("function LinearGradient(line, colors...)").setCustomExecute(function(context, args, evaluator) { let b = new BrushLinearGradient(body.canvasManager.drawingLayer.width, body.canvasManager.drawingLayer.height, args[0], args[1], args[args.length - 1]); for (let i = 2; i < args.length - 1; i++) b.addStep((i - 1) / (args.length - 2), args[i]); return b; }));
     }
 }
