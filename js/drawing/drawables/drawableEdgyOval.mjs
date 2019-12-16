@@ -89,4 +89,8 @@ export class DrawableEdgyOval extends Drawable {
         canvas.context.closePath();
         canvas.context.stroke();
     }
+
+    toString() {
+        return "[EdgyOval] center: (" + this.center.x + ", " + this.center.y + "), minRadius: " + this.minRadius + ", maxRadius: " + this.maxRadius + ", points: " + this.points;
+    }
 }

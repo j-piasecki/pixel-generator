@@ -76,6 +76,10 @@ export class Line {
         this.end.draw(canvas);
     }
 
+    toString() {
+        return "[Line] start: (x: " + this.start.x + ", y:" + this.start.y + "), end: (x: " + this.end.x + ", y: " + this.end.y + ")";
+    }
+
     /**
      * @param {Vector2} start - First point of line
      * @param {Vector2} end - Second point of line

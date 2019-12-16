@@ -102,4 +102,8 @@ export class DrawableLine extends Drawable {
         this.polygon.setPoint(2, new Vector2(this.line.end.x + perp.x * this._endThickness * 0.5, this.line.end.y + perp.y * this._endThickness * 0.5));
         this.polygon.setPoint(3, new Vector2(this.line.end.x - perp.x * this._endThickness * 0.5, this.line.end.y - perp.y * this._endThickness * 0.5));
     }
+
+    toString() {
+        return this.line.toString();
+    }
 }

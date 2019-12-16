@@ -91,4 +91,8 @@ export class DrawableCurve extends Drawable {
         
         this.drawableStrip = new DrawableLineStrip(this.strip);
     }
+
+    toString() {
+        return this.curve.toString();
+    }
 }

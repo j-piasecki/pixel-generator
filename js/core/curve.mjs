@@ -112,4 +112,8 @@ export class Curve {
 
         return result;
     }
+
+    toString() {
+        return "[Curve] start: (x: " + this.start.x + ", y: " + this.start.y + "), end: (x: " + this.end.x + ", y: " + this.end.y + "), firstCtrl: (x: " + this.firstControl.x + ", y: " + this.firstControl.y + "), secondCtrl: (x: " + this.secondControl.x + ", y: " + this.secondControl.y + ")";
+    }
 }

@@ -71,6 +71,10 @@ export class BrushLinearGradient extends Brush {
 
         this.generate();
     }
+
+    toString() {
+        return "[LinearGradient] line: " + this.line.toString();
+    }
 }
 
 class GradientStep {

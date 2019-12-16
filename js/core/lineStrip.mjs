@@ -60,6 +60,16 @@ export class LineStrip {
 
         return this.generatedPoints;
     }
+
+    toString() {
+        let r = "[LineStrip]";
+
+        for (let i = 0; i < this.points.length; i++) {
+            r += " (x: " + this.points[i].point.x + ", y: " + this.points[i].point.y + ", thickness: " + this.points[i].thickness + ")";
+        }
+
+        return r;
+    }
 }
 
 export class LineStripElement {

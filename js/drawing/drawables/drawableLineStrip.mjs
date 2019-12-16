@@ -49,4 +49,8 @@ export class DrawableLineStrip extends Drawable {
     setStrokeWidth(width) {
         this.drawablePolygon.setStrokeWidth(width);
     }
+
+    toString() {
+        return this.strip.toString();
+    }
 }

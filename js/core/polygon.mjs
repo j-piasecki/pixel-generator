@@ -124,4 +124,8 @@ export class Polygon {
             this.vertices[i].draw(canvas);
         }
     }
+
+    toString() {
+        return "[Polygon] points: " + this.vertices.length;
+    }
 }

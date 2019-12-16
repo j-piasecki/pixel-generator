@@ -25,4 +25,8 @@ export class BrushSolidColor extends Brush {
             }
         }
     }
+
+    toString() {
+        return "[SolidColor] color: " + this.color.toString();
+    }
 }

@@ -188,6 +188,10 @@ export class Vector2 {
         canvas.context.fill();
     }
 
+    toString() {
+        return "[Vector] x: " + this.x + ", y: " + this.y + ((this.rangeX != 0 && this.rangeY != this.rangeX) ? ", rangeX: " + this.rangeX + ", rangeY: " + this.rangeY : ((this.rangeX != 0) ? ", radius: " + this.rangeX : ""));
+    }
+
     /**
      * @param {Vector2} vec1 
      * @param {Vector2} vec2

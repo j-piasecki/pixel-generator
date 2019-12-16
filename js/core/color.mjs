@@ -82,6 +82,10 @@ export class Color {
         return this;
     }
 
+    toString() {
+        return "[Color] r: " + this.r + ", g: " + this.g + ", b: " + this.b + ", a: " + this.a;
+    }
+
     /**
      * Blends two specified colors based on their alpha channel
      * @param {Color} bg - Background color

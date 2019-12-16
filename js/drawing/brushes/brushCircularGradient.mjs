@@ -75,6 +75,10 @@ export class BrushCircularGradient extends Brush {
 
         this.generate();
     }
+
+    toString() {
+        return "[CircularGradient] center: (" + this.center.x + ", " + this.center.y + "), radius: " + this.radius;
+    }
 }
 
 class GradientStep {

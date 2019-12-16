@@ -84,4 +84,8 @@ export class DrawablePolygon extends Drawable {
             this.outline[i].wireframeVisible = false;
         }
     }
+
+    toString() {
+        return this.polygon.toString();
+    }
 }

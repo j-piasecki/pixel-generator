@@ -27,4 +27,8 @@ export class BrushWhiteNoise extends Brush {
             }
         }
     }
+
+    toString() {
+        return "[WhiteNoise] color: " + this.color.toString();
+    }
 }
