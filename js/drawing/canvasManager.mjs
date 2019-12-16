@@ -33,18 +33,27 @@ export class CanvasManager {
      * @param {Number} height - Height of the buffer
      */
     init(width, height) {
-        this.drawingLayer = new Layer(width, height);
-        this.layerComposer = new LayerComposer(this.drawingLayer);
-        this.currentLayer = this.layerComposer.nextLayer();
-        this.variables = {}; //global variables
-
-        this.centerContent(false);
+        this.setup(width, height);
         this.render();
 
         window.addEventListener("mouseup", (e) => { this.onMouseUp(e); });
         window.addEventListener("mousemove", (e) => { this.onMouseMove(e); });
         this.canvas.addEventListener("mousedown", (e) => { this.onMouseDown(e); });
         this.canvas.addEventListener("wheel", (e) => { this.onMouseWheel(e); });
+    }
+
+    /**
+     * Create render buffer
+     * @param {Number} width - Width of the buffer
+     * @param {Number} height - Height of the buffer
+     */
+    setup(width, height) {
+        this.drawingLayer = new Layer(width, height);
+        this.layerComposer = new LayerComposer(this.drawingLayer);
+        this.currentLayer = this.layerComposer.nextLayer();
+        this.variables = {}; //global variables
+
+        this.centerContent(false);
     }
 
     /**
@@ -62,7 +71,7 @@ export class CanvasManager {
     update() {
         if (this.targetScale < 0.025)
             this.targetScale = 0.025;
-        
+            
         let scaleChange = (this.scale - this.targetScale) * 0.15;
 
         if (this.scale != this.targetScale) {

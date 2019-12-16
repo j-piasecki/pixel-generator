@@ -46,7 +46,7 @@ export class ExpressionEvaluator {
                 stack.push(query.substring(index).trim());
                 break;
             }
-
+            
             if (index != opIndex) {
                 if (this.insideQuote(stack)) {
                     stack.push(query.substring(index, opIndex));
@@ -445,7 +445,7 @@ export class ExpressionEvaluator {
                     index = query.indexOf("\"", index + 1);
                 } while (index != -1 && query.charAt[index - 1] == "\\");
 
-                return index;
+                return [index, Operator.QUOTE];
             }
         }
 

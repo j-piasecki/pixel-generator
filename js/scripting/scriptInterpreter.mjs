@@ -73,7 +73,7 @@ export class ScriptInterpreter {
         let body = this;
 
         this.rootContext.functions.push(new Function("function debug(a1, a2, ...)").setCustomExecute(function(context, args, evaluator) { console.log(args.join(" ")); }));
-        this.rootContext.functions.push(new Function("function init(x, y)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.init(args[0], args[1]); }));
+        this.rootContext.functions.push(new Function("function init(x, y)").setCustomExecute(function(context, args, evaluator) { body.canvasManager.setup(args[0], args[1]); }));
         this.rootContext.functions.push(new Function("function nextLayer()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.nextLayer; }));
         this.rootContext.functions.push(new Function("function save()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.save(); }));
         this.rootContext.functions.push(new Function("function restore()").setCustomExecute(function(context, args, evaluator) { body.canvasManager.currentLayer.restore(); }));
