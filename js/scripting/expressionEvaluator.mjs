@@ -117,12 +117,10 @@ export class ExpressionEvaluator {
             }
         }
 
-        if (start == -1) {
-            while (stack.indexOf(Operator.CLOSE_PARENTHESIS) != -1)
-                stack.splice(stack.indexOf(Operator.CLOSE_PARENTHESIS), 1);
+        while (stack.indexOf(Operator.CLOSE_PARENTHESIS) != -1)
+            stack.splice(stack.indexOf(Operator.CLOSE_PARENTHESIS), 1);
 
-            return this.evaluateExpression(stack, context);
-        }
+        return this.evaluateExpression(stack, context);
     }
 
     /**
@@ -174,8 +172,12 @@ export class ExpressionEvaluator {
                 else
                     value = n1 + (n2 - n1) * Math.random();
             } else {
+                n2 = this.evaluateStack(stack.slice(colon, nextColon), context)[0]
+
                 if (stack[nextColon + 1] == "d")
                     value = n1 + (n2 - n1) * Math.random();
+                else if (stack[nextColon + 1] == "i")
+                    value = Math.round(n1 + (n2 - n1) * Math.random());
             }
 
             stack.splice(index, close - index + 1, value);
