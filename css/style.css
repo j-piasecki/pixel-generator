@@ -23,6 +23,7 @@ body {
 #toolbox .action {
   width: 2vw;
   height: 2vw;
+  cursor: pointer;
   -webkit-transition: all 0.5s;
   transition: all 0.5s;
   background-position: center;
@@ -43,6 +44,10 @@ body {
 
 #toolbox #action-switch-wireframes {
   background-image: url("../img/icon_switch_wireframes.png");
+}
+
+#toolbox #action-save {
+  background-image: url("../img/icon_save.png");
 }
 
 #code-area {

@@ -24,6 +24,7 @@ body {
         width: 2vw;
         height: 2vw;
 
+        cursor: pointer;
         transition: all 0.5s;
         background-position: center;
         background-size: cover;
@@ -43,6 +44,10 @@ body {
 
     #action-switch-wireframes {
         background-image: url("../img/icon_switch_wireframes.png");
+    }
+
+    #action-save {
+        background-image: url("../img/icon_save.png");
     }
 }
 

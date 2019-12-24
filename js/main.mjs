@@ -37,4 +37,5 @@ window.onload = () => {
     document.getElementById("action-center").addEventListener("click", (e) => { canvasManager.centerContent(true); });
     document.getElementById("action-run").addEventListener("click", (e) => { scriptInterpreter.run(codeInput.value); });
     document.getElementById("action-switch-wireframes").addEventListener("click", (e) => { canvasManager.wireframesVisible = !canvasManager.wireframesVisible; });
+    document.getElementById("action-save").addEventListener("click", (e) => { let img = canvasManager.selectedLayer.buffer.toDataURL("image/png").replace("image/png", "image/octet-stream"); document.getElementById("save-link").setAttribute("href", img); });
 }
