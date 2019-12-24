@@ -62,6 +62,9 @@ export class ScriptInterpreter {
         });
 
         rootBlock.execute(this.rootContext, this.expressionEvaluator);
+
+        this.canvasManager.layerComposer.render();
+        this.canvasManager.createBuffer();
     }
 
     setupEvironment() {

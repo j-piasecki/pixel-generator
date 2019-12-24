@@ -53,6 +53,10 @@ export class CanvasManager {
         this.currentLayer = this.layerComposer.nextLayer();
         this.variables = {}; //global variables
 
+        this.buffer = document.createElement("canvas");
+        this.buffer.width = width;
+        this.buffer.height = height;
+
         this.centerContent(false);
     }
 
@@ -101,23 +105,58 @@ export class CanvasManager {
         this.update();
 
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        this.layerComposer.render();
-        this.drawLayer(this.drawingLayer);
+
+        this.drawBuffer();
+        this.drawWireframes(this.drawingLayer);
         this.drawImageBounds();
+    }
+
+    /**
+     * Draws content of specified layer to the buffer
+     * @param {?Layer} layer - Layer to be buffered (uses composed layer if unspecified)
+     */
+    createBuffer(layer) {
+        if (layer == undefined || layer == null) layer = this.drawingLayer;
+
+        let ctx = this.buffer.getContext("2d");
+        ctx.clearRect(0, 0, this.buffer.width, this.buffer.height);
+
+        for (let x = 0; x < layer.width; x++) {
+            for (let y = 0; y < layer.height; y++) {
+                if (layer.getPixel(x, y).a == 0)
+                    continue;
+
+                ctx.fillStyle = layer.getPixel(x, y).getRGBAString();
+                ctx.fillRect(x, y, 1, 1);
+            }
+        }
+    }
+
+    /**
+     * Draws buffered image to the canvas
+     */
+    drawBuffer() {
+        this.context.imageSmoothingEnabled = false;
+
+        this.context.save();
+        this.context.translate(this.translation.x * this.scale, this.translation.y * this.scale);
+        this.context.scale(this.pixelSize * this.scale, this.pixelSize * this.scale);
+        this.context.drawImage(this.buffer, 0, 0);
+        this.context.restore();
     }
 
     /**
      * Clears buffer layer and all composited layers
      */
     clear() {
+        this.buffer.getContext("2d").clearRect(0, 0, this.buffer.width, this.buffer.height);
         this.drawingLayer.clear();
         this.layerComposer.clear();
         this.variables = {};
     }
 
     /**
-     * Draws content of specified layer to the canvas
+     * Draws content of specified layer directly to the canvas
      * @param {Layer} layer 
      */
     drawLayer(layer) {
@@ -135,6 +174,14 @@ export class CanvasManager {
             }
         }
 
+        this.drawWireframes(layer);
+    }
+
+    /**
+     * Draws wireframes from the layer to the canvas
+     * @param {Layer} layer - Source of wireframes
+     */
+    drawWireframes(layer) {
         if (this.wireframesVisible) {
             for (let i = 0; i < layer.wireframes.length; i++) {
                 layer.wireframes[i].draw(this);
