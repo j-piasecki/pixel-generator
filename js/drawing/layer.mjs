@@ -26,6 +26,10 @@ export class Layer {
         this.width = width;
         this.height = height;
 
+        this.buffer = document.createElement("canvas");
+        this.buffer.width = width;
+        this.buffer.height = height;
+
         this.pixels = [];
         this.clear();
     }
@@ -34,6 +38,8 @@ export class Layer {
      * Sets every pixel to transparent, resets saved and current states
      */
     clear() {
+        this.buffer.getContext("2d").clearRect(0, 0, this.buffer.width, this.buffer.height);
+
         for (let x = 0; x < this.width; x++) {
             this.pixels[x] = [];
             for (let y = 0; y < this.height; y++) {
@@ -44,6 +50,24 @@ export class Layer {
         this.savedStates = [];
         this.state = new State();
         this.wireframes = [];
+    }
+
+    /**
+     * Draws content of layer to the buffer
+     */
+    createBuffer() {
+        let ctx = this.buffer.getContext("2d");
+        ctx.clearRect(0, 0, this.buffer.width, this.buffer.height);
+
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (this.getPixel(x, y).a == 0)
+                    continue;
+
+                ctx.fillStyle = this.getPixel(x, y).getRGBAString();
+                ctx.fillRect(x, y, 1, 1);
+            }
+        }
     }
 
     /**
