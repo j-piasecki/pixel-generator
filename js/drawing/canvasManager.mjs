@@ -49,6 +49,7 @@ export class CanvasManager {
      */
     setup(width, height) {
         this.drawingLayer = new Layer(width, height);
+        this.selectedLayer = this.drawingLayer;
         this.layerComposer = new LayerComposer(this.drawingLayer);
         this.currentLayer = this.layerComposer.nextLayer();
         this.variables = {}; //global variables
@@ -107,16 +108,16 @@ export class CanvasManager {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.drawBuffer();
-        this.drawWireframes(this.drawingLayer);
+        this.drawWireframes(this.selectedLayer);
         this.drawImageBounds();
     }
 
     /**
      * Draws content of specified layer to the buffer
-     * @param {?Layer} layer - Layer to be buffered (uses composed layer if unspecified)
+     * @param {?Layer} layer - Layer to be buffered (uses currently selected layer if unspecified)
      */
     createBuffer(layer) {
-        if (layer == undefined || layer == null) layer = this.drawingLayer;
+        if (layer == undefined || layer == null) layer = this.selectedLayer;
 
         let ctx = this.buffer.getContext("2d");
         ctx.clearRect(0, 0, this.buffer.width, this.buffer.height);
@@ -210,8 +211,8 @@ export class CanvasManager {
         let scaleY = this.canvas.height * 0.8 / (this.pixelSize * this.drawingLayer.height);
         let newScale = (scaleX < scaleY) ? scaleX : scaleY;
 
-        let translationX = (this.canvas.width - newScale * this.pixelSize * this.drawingLayer.width) * 0.5;
-        let translationY = (this.canvas.height - newScale * this.pixelSize * this.drawingLayer.height) * 0.5;
+        let translationX = (this.canvas.width - newScale * this.pixelSize * this.drawingLayer.width) * 0.5 / newScale;
+        let translationY = (this.canvas.height - newScale * this.pixelSize * this.drawingLayer.height) * 0.5 / newScale;
 
         if (animate) {
             this.scaleFocus.x = (this.translation.x + this.drawingLayer.width * this.pixelSize * 0.5) * this.scale;
