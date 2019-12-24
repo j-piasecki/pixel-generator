@@ -11,7 +11,7 @@ export class Function {
         this.block = block;
 
         this.name = exp.substring(exp.indexOf(" "), exp.indexOf("(")).trim();
-        this.arguments = exp.substring(exp.indexOf("(") + 1, exp.indexOf(")")).replace(" ", "").split(",");
+        this.arguments = exp.substring(exp.indexOf("(") + 1, exp.indexOf(")")).replace(" ", "").split(",").map(x => { return x.trim(); });
     }
     
     /**
