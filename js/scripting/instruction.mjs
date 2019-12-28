@@ -27,10 +27,18 @@ export class Instruction {
 
             context.declareVariable(name, evaluator.evaluate(value, context)[0]);
         } else if (this.expression.indexOf("=") != -1) {
-            let name = this.expression.substring(0, this.expression.indexOf("=")).trim();
+            let index = this.expression.indexOf("=") - 1;
+            let name = this.expression.substring(0, (this.expression.charAt(index) == "*" || this.expression.charAt(index) == "/" || this.expression.charAt(index) == "%" || this.expression.charAt(index) == "+" || this.expression.charAt(index) == "-") ? index : index + 1).trim();
             let value = this.expression.substring(this.expression.indexOf("=") + 1).trim();
 
-            context.setVariable(name, evaluator.evaluate(value, context)[0]);
+            switch (this.expression.charAt(index)) {
+                case "*": context.setVariable(name, context.getVariable(name) * evaluator.evaluate(value, context)[0]); break;
+                case "/": context.setVariable(name, context.getVariable(name) / evaluator.evaluate(value, context)[0]); break;
+                case "%": context.setVariable(name, context.getVariable(name) % evaluator.evaluate(value, context)[0]); break;
+                case "+": context.setVariable(name, context.getVariable(name) + evaluator.evaluate(value, context)[0]); break;
+                case "-": context.setVariable(name, context.getVariable(name) - evaluator.evaluate(value, context)[0]); break;
+                default: context.setVariable(name, evaluator.evaluate(value, context)[0]); break;
+            }
         } else {
             evaluator.evaluate(this.expression, context);
         }
