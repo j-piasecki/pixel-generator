@@ -22,7 +22,6 @@ export class IfInstruction extends Instruction {
     execute(context, evaluator) {
         let query = this.expression.substring(this.expression.indexOf("(") + 1, this.expression.lastIndexOf(")"));
 
-        
         let satisfied = evaluator.evaluate(query, context)[0];
         
         if (satisfied != false && satisfied != undefined && satisfied != null) {

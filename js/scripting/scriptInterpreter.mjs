@@ -10,6 +10,7 @@ import { ScriptContext } from "./scriptContext.mjs";
 import { ScriptBlock } from "./scriptBlock.mjs";
 import { Instruction } from "./instruction.mjs";
 import { IfInstruction } from "./ifInstruction.mjs";
+import { WhileInstruction } from "./whileInstruction.mjs";
 import { Function } from "./function.mjs";
 import { Vector2 } from "../core/vector2.mjs";
 import { Color } from "../core/color.mjs";
@@ -55,6 +56,12 @@ export class ScriptInterpreter {
 
                 blockStack.pop();
                 blockStack[blockStack.length - 1].instructions[blockStack[blockStack.length - 1].instructions.length - 1].elseBlock = nextBlock;
+                blockStack.push(nextBlock);
+            } else if (exp.startsWith("while")) {
+                let nextBlock = new ScriptBlock();
+                let instruction = new WhileInstruction(exp, nextBlock);
+
+                blockStack[blockStack.length -1].addInstruction(instruction);
                 blockStack.push(nextBlock);
             } else if (exp.length > 0) {
                 blockStack[blockStack.length -1].addInstruction(new Instruction(exp));

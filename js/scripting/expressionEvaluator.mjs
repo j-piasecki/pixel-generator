@@ -304,7 +304,7 @@ export class ExpressionEvaluator {
                 index = stack.indexOf(Operator.LESSER);
             }
         } else {
-            index = 0;
+            let index = 0;
             for (let i = 0; i < stack.length; i++) {
                 //Handle or connective
                 if (stack[i] == Operator.OR) {

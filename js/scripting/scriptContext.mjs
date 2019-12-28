@@ -32,7 +32,7 @@ export class ScriptContext {
      * @param {Object} value - New value of the variable
      */
     setVariable(name, value) {
-        if (this.variables[name])
+        if (this.variables[name] != undefined)
             this.variables[name] = value;
         else if (this.parent != null)
             this.parent.setVariable(name, value);

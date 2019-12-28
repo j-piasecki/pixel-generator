@@ -17,6 +17,10 @@ export class Instruction {
     execute(context, evaluator) {
         if (this.expression.startsWith("return")) {
             return [true, evaluator.evaluate(this.expression.substring(6), context)[0]];
+        } else if (this.expression.startsWith("break")) {
+            return [true, ["break"]];
+        }  else if (this.expression.startsWith("continue")) {
+            return [true, ["continue"]];
         } else if (this.expression.startsWith("let ")) {
             let name = this.expression.substring(4, this.expression.indexOf("=")).trim();
             let value = this.expression.substring(this.expression.indexOf("=") + 1).trim();
