@@ -5,6 +5,7 @@ const Operator = {
     SUBTRACT: "-",
     MULTIPLY: "*",
     DIVIDE: "/",
+    MODULO: "%",
     POWER: "^",
     OPEN_PARENTHESIS: "(",
     CLOSE_PARENTHESIS: ")",
@@ -206,6 +207,14 @@ export class ExpressionEvaluator {
         while (index != -1) {
             stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) / this.getValue(stack, index + 1, context));
             index = stack.indexOf(Operator.DIVIDE);
+        }
+
+        //Handle modulo operator
+        index = stack.indexOf(Operator.MODULO);
+
+        while (index != -1) {
+            stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) % this.getValue(stack, index + 1, context));
+            index = stack.indexOf(Operator.MODULO);
         }
 
         //handle add operator
