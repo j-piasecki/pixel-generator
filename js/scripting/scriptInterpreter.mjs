@@ -71,6 +71,8 @@ export class ScriptInterpreter {
         rootBlock.execute(this.rootContext, this.expressionEvaluator);
 
         this.canvasManager.layerComposer.render();
+        this.canvasManager.selectedLayer = this.canvasManager.drawingLayer;
+        this.canvasManager.layerPicker.translation = 0;
     }
 
     setupEvironment() {

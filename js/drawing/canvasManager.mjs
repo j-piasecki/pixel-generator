@@ -1,6 +1,7 @@
 import { Vector2 } from "../core/vector2.mjs";
 import { Layer } from "./layer.mjs";
 import { LayerComposer } from "./layerComposer.mjs";
+import { LayerPicker } from "./layerPicker.mjs";
 
 export class CanvasManager {
     /**
@@ -10,6 +11,7 @@ export class CanvasManager {
     constructor(canvas) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
+        this.layerPicker = new LayerPicker(this);
 
         this.wireframesVisible = true;
 
@@ -92,6 +94,8 @@ export class CanvasManager {
         } else if (Math.abs(this.scale - this.targetScale) < 0.01) {
             this.isCenteringContent = false;
         }
+
+        this.layerPicker.update();
     }
 
     /**
@@ -105,6 +109,8 @@ export class CanvasManager {
 
         this.drawBuffer(this.selectedLayer);
         this.drawImageBounds();
+
+        this.layerPicker.render(this.context);
     }
 
     /**
@@ -187,7 +193,7 @@ export class CanvasManager {
         let scaleY = this.canvas.height * 0.8 / (this.pixelSize * this.drawingLayer.height);
         let newScale = (scaleX < scaleY) ? scaleX : scaleY;
 
-        let translationX = (this.canvas.width - newScale * this.pixelSize * this.drawingLayer.width) * 0.5 / newScale;
+        let translationX = (this.canvas.width - newScale * this.pixelSize * this.drawingLayer.width) * 0.35 / newScale;
         let translationY = (this.canvas.height - newScale * this.pixelSize * this.drawingLayer.height) * 0.5 / newScale;
 
         if (animate) {
@@ -243,6 +249,8 @@ export class CanvasManager {
      * @param {MouseEvent} e 
      */
     onMouseDown(e) {
+        if (this.layerPicker.onMouseDown()) return;
+
         this.mouseDown = true;
         let rect = this.canvas.getBoundingClientRect();
 
@@ -256,8 +264,8 @@ export class CanvasManager {
      */
     onMouseMove(e) {
         let rect = this.canvas.getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            let y = e.clientY - rect.top;
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
 
         if (this.mouseDown) {
             this.translation.x -= (this.mousePointerPosition.x - x) / this.scale;
@@ -284,6 +292,8 @@ export class CanvasManager {
      * @param {MouseEvent} e 
      */
     onMouseWheel(e) {
+        if (this.layerPicker.onScroll(e)) return;
+
         if (e.ctrlKey) {
             this.targetScale *= 1 + e.deltaY * 0.01;
 
