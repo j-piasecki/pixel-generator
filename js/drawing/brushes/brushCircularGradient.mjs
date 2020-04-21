@@ -16,17 +16,18 @@ export class BrushCircularGradient extends Brush {
         super(width, height);
 
         if (outerColor == undefined) {
-            outerColor = new Color(0, 0, 0, 0);
+            this.steps = [new GradientStep(0, innerColor)];
+        } else {
+            this.steps = [new GradientStep(0, innerColor), new GradientStep(1, outerColor)];
         }
 
-        this.steps = [new GradientStep(0, innerColor), new GradientStep(1, outerColor)];
-        
         this.width = width;
         this.height = height;
         this.radius = radius;
         this.center = center;
 
-        this.generate();
+        if (outerColor != undefined)
+            this.generate();
     }
 
     /**
@@ -36,7 +37,7 @@ export class BrushCircularGradient extends Brush {
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let progress = new Vector2(x, y).distanceFrom(this.center) / this.radius;
-                
+
                 if (progress > 1) {
                     progress = 1;
                 }
@@ -46,11 +47,12 @@ export class BrushCircularGradient extends Brush {
                         let scaledProgress = (progress - this.steps[i].progress) / (this.steps[i + 1].progress - this.steps[i].progress);
 
                         this.layer.setPixel(x, y, this.steps[i].color.transition(this.steps[i + 1].color, scaledProgress));
+                        break;
                     }
                 }
             }
         }
-        
+
         this.invertedColor = new Color(0, 0, 0, 1);
 
         for (let i = 0; i < this.steps.length; i++) {
@@ -68,12 +70,21 @@ export class BrushCircularGradient extends Brush {
      * Adds step to the gradient at specified range
      * @param {Number} progress - Normalized distance from the center (0-1)
      * @param {Color} color - Color of the step
+     * @param {Boolean} generate - Tells whether to regenerate brush layer
      */
-    addStep(progress, color) {
+    addStep(progress, color, generate) {
         this.steps.push(new GradientStep(progress, color));
         this.steps.sort((a, b) => { return a.progress - b.progress; });
 
-        this.generate();
+        if (generate == undefined || generate)
+            this.generate();
+    }
+
+    /**
+     * @returns {Number} - Returns how much progress is left (0-1)
+     */
+    getRemainingProgress() {
+        return 1 - this.steps[this.steps.length - 1].progress;
     }
 
     toString() {

@@ -20,9 +20,14 @@ export class BrushLinearGradient extends Brush {
         this.width = width;
         this.height = height;
 
-        this.steps = [new GradientStep(0, start), new GradientStep(1, end)];
+        if (end == undefined) {
+            this.steps = [new GradientStep(0, start)];
+        } else {
+            this.steps = [new GradientStep(0, start), new GradientStep(1, end)];
+        }
 
-        this.generate();
+        if (end != undefined)
+            this.generate();
     }
 
 
@@ -36,7 +41,7 @@ export class BrushLinearGradient extends Brush {
 
                 if (progress > 1) progress = 1;
                 if (progress < 0) progress = 0;
-                
+
                 for (let i = 0; i < this.steps.length - 1; i++) {
                     if (this.steps[i].progress <= progress && this.steps[i + 1].progress >= progress) {
                         let scaledProgress = (progress - this.steps[i].progress) / (this.steps[i + 1].progress - this.steps[i].progress);
@@ -64,12 +69,21 @@ export class BrushLinearGradient extends Brush {
      * Adds step to the gradient at specified range
      * @param {Number} progress - Normalized distance from the start point (0-1)
      * @param {Color} color - Color of the step
+     * @param {Boolean} generate - Tells whether to regenerate brush layer
      */
-    addStep(progress, color) {
+    addStep(progress, color, generate) {
         this.steps.push(new GradientStep(progress, color));
         this.steps.sort((a, b) => { return a.progress - b.progress; });
 
-        this.generate();
+        if (generate == undefined || generate)
+            this.generate();
+    }
+
+    /**
+     * @returns {Number} - Returns how much progress is left (0-1)
+     */
+    getRemainingProgress() {
+        return 1 - this.steps[this.steps.length - 1].progress;
     }
 
     toString() {
