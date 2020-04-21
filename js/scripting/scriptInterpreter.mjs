@@ -4,7 +4,7 @@ import { BrushWhiteNoise } from "../drawing/brushes/brushWhiteNoise.mjs";
 import { BrushCircularGradient } from "../drawing/brushes/brushCircularGradient.mjs";
 import { BrushLinearGradient } from "../drawing/brushes/brushLinearGradient.mjs";
 import { DrawableCreator } from "../drawing/drawables/drawableCreator.mjs";
-import { DrawableEdgyOval } from "../drawing/drawables/drawableEdgyOval.mjs";
+import { DrawableOval } from "../drawing/drawables/drawableOval.mjs";
 import { ExpressionEvaluator } from "./expressionEvaluator.mjs";
 import { ScriptContext } from "./scriptContext.mjs";
 import { ScriptBlock } from "./scriptBlock.mjs";
@@ -124,7 +124,7 @@ export class ScriptInterpreter {
             return p;
         }));
 
-        this.rootContext.functions.push(new Function("function EdgyOval(center, minr, maxr, points, startangle, offset)").setCustomExecute(function (context, args, evaluator) { return new DrawableEdgyOval(args[0].next(), args[1], args[2], args[3], (args.length > 4) ? args[4] : 0, (args.length > 5) ? args[5] : 0); }));
+        this.rootContext.functions.push(new Function("function Oval(center, minr, maxr, points, startangle, offset)").setCustomExecute(function (context, args, evaluator) { return new DrawableOval(args[0].next(), args[1], args[2], args[3], (args.length > 4) ? args[4] : 0, (args.length > 5) ? args[5] : 0); }));
 
         this.rootContext.functions.push(new Function("function SolidColor(color)").setCustomExecute(function (context, args, evaluator) { return new BrushSolidColor(body.canvasManager.drawingLayer.width, body.canvasManager.drawingLayer.height, args[0]); }));
         this.rootContext.functions.push(new Function("function WhiteNoise(color)").setCustomExecute(function (context, args, evaluator) { return new BrushWhiteNoise(body.canvasManager.drawingLayer.width, body.canvasManager.drawingLayer.height, args[0]); }));

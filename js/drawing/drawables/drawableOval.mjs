@@ -3,7 +3,7 @@ import { Drawable } from "./drawable.mjs";
 import { DrawablePolygon } from "./drawablePolygon.mjs";
 import { Polygon } from "../../core/polygon.mjs";
 
-export class DrawableEdgyOval extends Drawable {
+export class DrawableOval extends Drawable {
     /**
      * @param {Vector2} center - Center of both circles
      * @param {Number} minRadius - Radius of inner circle
@@ -23,7 +23,7 @@ export class DrawableEdgyOval extends Drawable {
         this.startingAngle = (startingAngle == undefined || startingAngle == null) ? 0 : startingAngle;
 
         let angle = Math.PI * 2 / points, sum = 0;
-        
+
         for (let i = 0; i < points; i++) {
             let r = minRadius + (maxRadius - minRadius) * Math.random();
             let currentAngle = angle * (1 + (1 - Math.random() * 2) * this.offset);
@@ -91,6 +91,6 @@ export class DrawableEdgyOval extends Drawable {
     }
 
     toString() {
-        return "[EdgyOval] center: (" + this.center.x + ", " + this.center.y + "), minRadius: " + this.minRadius + ", maxRadius: " + this.maxRadius + ", points: " + this.points;
+        return "[Oval] center: (" + this.center.x + ", " + this.center.y + "), minRadius: " + this.minRadius + ", maxRadius: " + this.maxRadius + ", points: " + this.points;
     }
 }

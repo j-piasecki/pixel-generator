@@ -9,7 +9,7 @@ import { LineStrip, LineStripElement } from "./core/lineStrip.mjs";
 import { BrushWhiteNoise } from "./drawing/brushes/brushWhiteNoise.mjs";
 import { BrushSolidColor } from "./drawing/brushes/brushSolidColor.mjs";
 import { DrawableLine } from "./drawing/drawables/drawableLine.mjs";
-import { DrawableEdgyOval } from "./drawing/drawables/drawableEdgyOval.mjs";
+import { DrawableOval } from "./drawing/drawables/drawableOval.mjs";
 import { DrawablePolygon } from "./drawing/drawables/drawablePolygon.mjs";
 import { DrawableCurve } from "./drawing/drawables/drawableCurve.mjs";
 import { DrawableLineStrip } from "./drawing/drawables/drawableLineStrip.mjs";
@@ -29,7 +29,7 @@ codeInput.onkeydown = e => {
         e.preventDefault();
         let s = codeInput.selectionStart;
         codeInput.value = codeInput.value.substring(0, s) + "\t" + codeInput.value.substring(s);
-        codeInput.selectionEnd = s + 1; 
+        codeInput.selectionEnd = s + 1;
     }
 }
 
