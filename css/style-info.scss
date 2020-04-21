@@ -1,0 +1,32 @@
+html {
+    background-color: rgb(32, 32, 32);
+    color: white;
+
+    font-family: sans-serif;
+
+    padding-top: 10vh;
+    padding-bottom: 25vh;
+}
+
+#content {
+    text-align: left;
+    margin-left: 10%;
+    width: 80%;
+
+    i {
+        color: rgb(200, 200, 216)
+    }
+
+    .snippet {
+        background-color: rgb(64, 64, 64);
+        padding: 1vh;
+        margin: 1vh;
+
+        border-radius: 1vh;
+    }
+
+    .tab {
+        display: inline-block;
+        margin-left: 32px;
+    }
+}

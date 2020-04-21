@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>How does this work?</title>
+    <link rel="Stylesheet" type="text/css" href="../css/style-info.css" />
+</head>
+
+<body>
+    <div id="content">
+        <h1>How does this work?</h1>
+        <p>
+            This is an app for procedurally generating pixelated graphics. It uses a simple scripting language that
+            provides much abstraction over the underlying code.
+        </p>
+
+        </br>
+        <h2>Scripting basics</h2>
+        <span>
+            <h3>Variables</h3>
+            The language provides basic functionalities. You can declare a variable using <i>let</i> keyword:
+            <div class="snippet">let name = value</div>
+            You do not have to use semicolons as the end of expression is indicated by the line break. You can change
+            the value of the variable in the same way you would declare it but without using the <i>let</i> keyword. You
+            cannot however declare an empty variable.
+
+            <h3>Conditionals</h3>
+            You can use <i>if/else</i> structure to execute part of your code when specified condition is true.
+            <div class="snippet">
+                if (condition):<br />
+                <div class="tab"><i>do something</i></div> <br />
+                end<br />
+            </div>
+
+            <div class="snippet">
+                if (condition):<br />
+                <div class="tab"><i>do something</i></div> <br />
+                else:<br />
+                <div class="tab"><i>do something different</i></div> <br />
+                end<br />
+            </div>
+
+            <div class="snippet">
+                if (condition1):<br />
+                <div class="tab"><i>do one thing</i></div> <br />
+                else:<br />
+                if (condition2):<br />
+                <div class="tab"><i>do second thing</i></div> <br />
+                else:<br />
+                <div class="tab"><i>do third thing</i></div> <br />
+                end<br />
+            </div>
+            You can use standard operators (!, &&, ||, ==, !=, &gt;, &lt;, &gt;=, &lt;=) in conditions. <h3>Loops</h3>
+            The only available loop is <i>while</i> loop. You can also use <i>break</i> and <i>continue</i>
+            keywords.
+            <div class="snippet">
+                while (condition):<br />
+                <div class="tab"><i>do something</i></div> <br />
+                end<br />
+            </div>
+
+            <h3>Functions</h3>
+            You can also declare your own functions.
+            <div class="snippet">
+                function name(arg1, arg2, ...):<br />
+                <div class="tab"><i>do something</i></div> <br />
+                end<br />
+            </div>
+            Those may or may not <i>return</i> a value. Recursion is supported.
+
+            <h3>Random numbers</h3>
+            There is a neat way to quickly generate random numbers using square brackets
+            <div class="snippet">
+                let num = [minValue:maxValue]
+            </div>
+            This method will return the same type of number as those used to generate it. If you use integers it will
+            generate integers, if you use floating point numbers it will generate floating point number. If you would
+            like to specify which one you want to get you can use <i>i</i> and <i>d</i> flags.
+            <div class="snippet">
+                let int = [minValue:maxValue:i]<br />
+                let dec = [minValue:maxValue:d]
+            </div>
+        </span>
+
+        <br />
+        <h2>Drawing stuff</h2>
+        <span>
+            <h3>Basics</h3>
+            Before drawing you have to initialize canvas:
+            <div class="snippet">
+                init(width, height)
+            </div>
+            To draw filled shape on canvas use <i>fill</i> method:
+            <div class="snippet">
+                fill(shape, brush)
+            </div>
+            To draw outline of a shape on canvas use <i>stroke</i> method:
+            <div class="snippet">
+                stroke(shape, brush)
+            </div>
+            You can also specify thickness of the outline:
+            <div class="snippet">
+                stroke(shape, brush, thickness)
+            </div>
+            By default this method uses the same thickness as turtle graphics.<br />
+            You can switch layers using <i>nextLayer</i> method:
+            <div class="snippet">
+                nextLayer()
+            </div>
+            You can create a point using <i>Point</i> method:
+            <div class="snippet">
+                let point = Point(x, y)
+            </div>
+            If you want to create point that is randomized you can use:
+            <div class="snippet">
+                let point = Point(x, y, radius)
+            </div>
+            Or:
+            <div class="snippet">
+                let point = Point(x, y, offsetX, offsetY)
+            </div>
+            To create a color you can use <i>Color</i> method:
+            <div class="snippet">
+                let color = Color(r, g, b)
+            </div>
+            Where r, g, b are respectively: red, green and blue channels. All in range 0-255.<br />
+            If you want to set transparency, use:
+            <div class="snippet">
+                let color = Color(r, g, b, a)
+            </div>
+            Where a is the alpha channel in range 0-1.
+
+            <h3>Shapes</h3>
+            <h4>Line</h4>
+            To create a line you can use <i>Line</i> method:
+            <div class="snippet">
+                let line = Line(point1, point2)
+            </div>
+
+            <h4>Line strip</h4>
+            To create a line strip you can use <i>LineStrip</i> method:
+            <div class="snippet">
+                let lineStrip = LineStrip(point1, thickness1, point2, thickness2, ...)
+            </div>
+
+            <h4>Curve</h4>
+            To create a curve you can use <i>Curve</i> method:
+            <div class="snippet">
+                let curve = Curve(startPoint, endPoint, firstControlPoint, secondControlPoint)
+            </div>
+
+            <h4>Polygon</h4>
+            To create a polygon you can use <i>Polygon</i> method:
+            <div class="snippet">
+                let polygon = Polygon(point1, point2, ...)
+            </div>
+            You can also make curved edges by using curves. Points of the curve will be calculated and then added to the
+            polygon:
+            <div class="snippet">
+                let polygon = Polygon(point1, curve, point2, ...)
+            </div>
+
+            <h4>Circle-like shapes</h4>
+            There is a special <i>Oval</i> method which can be used to generate shapes based on circle:
+            <div class="snippet">
+                let oval = Oval(centerPoint, minRadius, maxRadius, pointCount, startAngle, pointOffset)
+            </div>
+            Where:<br />
+            <div class="tab">centerPoint - center of both circles, and generated shape,</div><br />
+            <div class="tab">minRadius - radius of inner circle,</div><br />
+            <div class="tab">maxRadius - radius of outer circle,</div><br />
+            <div class="tab">pointCount - number of generated points,</div><br />
+            <div class="tab">startAngle - angle (in radians) at wchich the first point is generated,</div><br />
+            <div class="tab">pointOffset - determines how much a point can be moved from its normal angular position
+                (0-1)
+            </div><br />
+
+            <h3>Brushes</h3>
+            <h4>Solid color brush</h4>
+            To create a solid color brush you can use <i>SolidColor</i> method:
+            <div class="snippet">
+                let brush = SolidColor(color)
+            </div>
+
+            <h4>White noise brush</h4>
+            To create a white noise brush you can use <i>WhiteNoise</i> method:
+            <div class="snippet">
+                let brush = WhiteNoise(color)
+            </div>
+
+            <h4>Circular gradient brush</h4>
+            To create a circular gradient brush you can use <i>CircularGradient</i> method:
+            <div class="snippet">
+                let brush = CircularGradient(centerPoint, radius, innerColor, inBetweenColor1, ..., outerColor)
+            </div>
+            Or:
+            <div class="snippet">
+                let brush = CircularGradient(centerPoint, radius, innerColor, color1, position1, color2, position2, ...)
+            </div>
+            Where position is in range 0-1 (distance from center).<br />
+            You can skip setting the position to 1 on the last color.
+
+            <h4>Linear gradient brush</h4>
+            To create a linear gradient brush you can use <i>LinearGradient</i> method:
+            <div class="snippet">
+                let brush = LinearGradient(line, startColor, inBetweenColor1, ..., endColor)
+            </div>
+            Or:
+            <div class="snippet">
+                let brush = LinearGradient(line, startColor, color1, position1, color2, position2, ...)
+            </div>
+            Where position is in range 0-1 (distance from start).<br />
+            You can skip setting the position to 1 on the last color.
+        </span>
+
+        <h3>Turtle graphics</h3>
+        You can <i>save</i> and <i>restore</i> state of the canvas:
+        <div class="snippet">
+            save()<br />
+            restore()
+        </div>
+        You can manage position of the pointer (without drawing anything) using <i>move</i> and <i>moveTo</i>:
+        <div class="snippet">
+            move(distance)<br />
+            moveTo(point)
+        </div>
+        You can manage rotation of the pointer using <i>rotate</i> and <i>setRotation</i>:
+        <div class="snippet">
+            rotate(angle)<br />
+            setRotation(angle)
+        </div>
+        Where angle is in radians. <br />
+        You can set the width of lines drawn using <i>setStrokeWidth</i>:
+        <div class="snippet">
+            setStrokeWidth(width)
+        </div>
+        You can draw a line using <i>line</i>:
+        <div class="snippet">
+            line(distance, brush)
+        </div>
+        This also results in moving the pointer by the same amount
+    </div>
+</body>
+
+</html>

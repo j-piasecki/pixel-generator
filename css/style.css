@@ -52,6 +52,12 @@ body {
   background-image: url("../img/icon_save.png");
 }
 
+#toolbox #action-info {
+  background-image: url("../img/icon_info.png");
+  position: absolute;
+  bottom: 0px;
+}
+
 #code-area {
   display: inline-block;
   resize: none;

@@ -1,0 +1,30 @@
+html {
+  background-color: #202020;
+  color: white;
+  font-family: sans-serif;
+  padding-top: 10vh;
+  padding-bottom: 25vh;
+}
+
+#content {
+  text-align: left;
+  margin-left: 10%;
+  width: 80%;
+}
+
+#content i {
+  color: #c8c8d8;
+}
+
+#content .snippet {
+  background-color: #404040;
+  padding: 1vh;
+  margin: 1vh;
+  border-radius: 1vh;
+}
+
+#content .tab {
+  display: inline-block;
+  margin-left: 32px;
+}
+/*# sourceMappingURL=style-info.css.map */

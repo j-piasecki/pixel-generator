@@ -52,6 +52,14 @@ body {
     #action-save {
         background-image: url("../img/icon_save.png");
     }
+
+
+    #action-info {
+        background-image: url("../img/icon_info.png");
+
+        position: absolute;
+        bottom: 0px;
+    }
 }
 
 #code-area {
