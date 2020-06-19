@@ -27,7 +27,7 @@ const Operator = {
 
 export class ExpressionEvaluator {
     constructor() {
-        
+
     }
 
     /**
@@ -47,7 +47,7 @@ export class ExpressionEvaluator {
                 stack.push(query.substring(index).trim());
                 break;
             }
-            
+
             if (index != opIndex) {
                 if (this.insideQuote(stack)) {
                     stack.push(query.substring(index, opIndex));
@@ -64,7 +64,7 @@ export class ExpressionEvaluator {
 
             index = opIndex + nextOp[1].length;
         }
-        
+
         return this.evaluateStack(stack, context);
     }
 
@@ -75,7 +75,7 @@ export class ExpressionEvaluator {
      */
     evaluateStack(stack, context) {
         let start = stack.indexOf(Operator.OPEN_PARENTHESIS);
-        
+
         while (start != -1) {
             let index = start + 1;
             let nesting = 1;
@@ -97,7 +97,7 @@ export class ExpressionEvaluator {
                     return;
                 }
             }
-            
+
             if (start > 0 && !this.isOperator(stack[start - 1])) {
                 let end = start + 1;
                 nesting = 1;
@@ -108,9 +108,9 @@ export class ExpressionEvaluator {
 
                     end++;
                 }
-                
+
                 stack.splice(start - 1, end, this.evaluateFunction(stack[start - 1], stack.slice(start + 1, end - 1), context));
-                
+
                 start = stack.indexOf(Operator.OPEN_PARENTHESIS);
             } else {
                 stack.splice(start, index - start, ...this.evaluateStack(stack.slice(start + 1, index - 1), context));
@@ -159,7 +159,7 @@ export class ExpressionEvaluator {
 
         //Handle random numbers
         let index = stack.indexOf(Operator.OPEN_BRACKET);
-        
+
         while (index != -1) {
             let close = stack.indexOf(Operator.CLOSE_BRACKET, index);
             let colon = stack.indexOf(Operator.COLON, index) + 1;
@@ -223,7 +223,7 @@ export class ExpressionEvaluator {
         while (index != -1) {
             let arg1 = this.getValue(stack, index - 1, context), arg2 = this.getValue(stack, index + 1, context);
             let result, start, end;
-            
+
             if (Array.isArray(arg1) && Array.isArray(arg2)) {
                 result = ["\"", arg1[0] + arg2[0], "\""];
                 start = arg1[1];
@@ -296,7 +296,7 @@ export class ExpressionEvaluator {
                 stack.splice(index - 1, 3, this.getValue(stack, index - 1, context) <= this.getValue(stack, index + 1, context));
                 index = stack.indexOf(Operator.LESSER_OR_EQUAL);
             }
-            
+
             //Handle greater operation
             index = stack.indexOf(Operator.GREATER);
 
@@ -329,14 +329,14 @@ export class ExpressionEvaluator {
                         else next = (nextOr < nextAnd) ? nextOr : nextAnd;
 
                         value = this.evaluateExpression(stack.slice(i + 1, next), context)[0];
-                        
+
                         if (value != false && value != undefined && value != null) { return [true]; }
                         else {
                             stack.splice(0, next, false);
                             i = 0;
                         }
                     }
-                } 
+                }
                 //Handle and connective
                 else if (stack[i] == Operator.AND) {
                     let value = this.evaluateExpression(stack.slice(0, i), context)[0];
@@ -351,7 +351,7 @@ export class ExpressionEvaluator {
                         else next = (nextOr < nextAnd) ? nextOr : nextAnd;
 
                         value = this.evaluateExpression(stack.slice(i + 1, next), context)[0];
-                        
+
                         if (value == false || value == undefined || value == null) { return [false]; }
                         else {
                             stack.splice(0, next, true);
@@ -375,7 +375,7 @@ export class ExpressionEvaluator {
         if (args.length > 1) {
             let start = 0, nesting = 0;
             let newArgs = [];
-            
+
             for (let i = 0; i < args.length; i++) {
                 if (args[i] == Operator.OPEN_PARENTHESIS) nesting++;
                 if (args[i] == Operator.CLOSE_PARENTHESIS) nesting--;
@@ -387,7 +387,7 @@ export class ExpressionEvaluator {
                         toAdd.push(split[j].trim());
                         if (j != split.length - 1) toAdd.push("|");
                     }
-                    
+
                     args.splice(i, 1, ...toAdd);
                     i += 2;
                 }
@@ -427,15 +427,17 @@ export class ExpressionEvaluator {
             } else {
                 return [stack[index + 1], index + 2];
             }
-        } else if (!Number.isNaN(parseFloat(stack[index]))) {
+        } else if (!Number.isNaN(Number(stack[index]))) {
             return Number(stack[index]);
+        } else if (stack[index] != undefined && stack[index].endsWith("deg") && !Number.isNaN(Number(stack[index].substring(0, stack[index].length - 3)))) {
+            return Number(stack[index].substring(0, stack[index].length - 3)) * Math.PI / 180;
         } else {
             let value = stack[index];
-            if (typeof(value) == "object" || value == undefined) return value;
+            if (typeof (value) == "object" || value == undefined) return value;
 
             let variable = context.getVariable(value);
 
-            if (typeof(variable) == "string" || variable instanceof String) {
+            if (typeof (variable) == "string" || variable instanceof String) {
                 return [variable, index];
             }
 
